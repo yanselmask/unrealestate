@@ -13,6 +13,7 @@ class LocalizationSetting extends Settings
     public ?string $localization_time_format;
     public string $localization_timezone;
     public string $localization_week_start;
+    public ?string $localization_default_currency;
 
     public static function group(): string
     {

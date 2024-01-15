@@ -103,7 +103,7 @@ class PostResource extends Resource
                                 Forms\Components\Fieldset::make('Options')
                                     ->label(__('Options'))
                                     ->schema([
-                                        Forms\Components\FileUpload::make('main_image')
+                                        \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('main_image')
                                             ->label(__('Main Image'))
                                             ->columnSpanFull(),
                                         Forms\Components\Checkbox::make('is_featured')

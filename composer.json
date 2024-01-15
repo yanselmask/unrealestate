@@ -12,8 +12,11 @@
         "akaunting/laravel-language": "^1.0",
         "algolia/algoliasearch-client-php": "^3.4",
         "althinect/filament-spatie-roles-permissions": "^2.2",
+        "arbermustafa/filament-locationpickr-field": "^2.0.0",
+        "beyondcode/laravel-comments": "^1.4",
         "bezhansalleh/filament-google-analytics": "^2.0",
         "bezhansalleh/filament-language-switch": "^3.0",
+        "cheesegrits/filament-google-maps": "^3.0",
         "coolsam/modules": "^3.0@beta",
         "dutchcodingcompany/filament-socialite": "^1.0",
         "filament/filament": "^3.1",
@@ -25,6 +28,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "hasnayeen/themes": "^3.0",
         "http-interop/http-factory-guzzle": "^1.2",
+        "ibrahimbougaoua/filament-sort-order": "^1.1",
         "jd-dotlogics/laravel-grapesjs": "^3.4",
         "joedixon/laravel-translation": "^2.2",
         "laravel/breeze": "^1.27",
@@ -38,10 +42,10 @@
         "mohamedsabil83/filament-forms-tinyeditor": "^2.2",
         "nwidart/laravel-modules": "^10.0",
         "owenvoke/blade-fontawesome": "^2.5",
-        "pboivin/filament-peek": "^2.0",
         "qirolab/laravel-themer": "^2.1",
         "rahmanramsi/filament-editorjs": "^2.0@beta",
         "ralphjsmit/laravel-filament-seo": "*",
+        "rtconner/laravel-likeable": "^3.2",
         "ryangjchandler/filament-navigation": "^1.0@beta",
         "shipu/web-installer": "^1.0",
         "shuvroroy/filament-spatie-laravel-backup": "^2.1",
@@ -49,6 +53,7 @@
         "spatie/laravel-medialibrary": "^11.0.0",
         "spatie/laravel-sluggable": "^3.5",
         "stechstudio/filament-impersonate": "^3.5",
+        "torann/currency": "^1.1",
         "wiebenieuwenhuis/filament-code-editor": "^1.0"
     },
     "require-dev": {
@@ -106,6 +111,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "beta",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

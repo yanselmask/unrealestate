@@ -50,6 +50,11 @@ class Page extends Model implements Editable
         return $this->morphMany(Meta::class, 'metable');
     }
 
+    public function sections()
+    {
+        return $this->morphToMany(FrontSection::class, 'sectionable')->withPivot('sort_order');
+    }
+
     /**
      * Get the indexable data array for the model.
      *

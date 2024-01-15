@@ -27,6 +27,8 @@ class ResetCment extends Command
     public function handle()
     {
         Artisan::call('migrate:rollback');
-        unlink(storage_path('installed'));
+        if (installed()) {
+            unlink(storage_path('installed'));
+        }
     }
 }

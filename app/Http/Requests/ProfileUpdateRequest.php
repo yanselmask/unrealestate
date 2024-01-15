@@ -17,7 +17,16 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'about' => ['nullable', 'string', 'max:500'],
+            'photo' => ['nullable', 'image', 'max:2048'],
+            'phone' => ['nullable', 'string', 'min:9', 'max:12', 'regex:/[0-9]{9}/'],
+            'socialKey.*' => 'sometimes|required|string|max:255',
+            'socialValue.*' => 'sometimes|required|string|url|max:255',
+            'social.*' => 'nullable|string|url|max:255',
+            'address' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
         ];
     }
 }

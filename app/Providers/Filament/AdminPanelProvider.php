@@ -9,6 +9,8 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -25,10 +27,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 //ENGLISH
+                __('Real Estate'),
                 __('Users'),
                 __('Posts'),
                 __('Settings'),
                 //SPANISH
+                __('Real Estate'),
                 __('Usuarios'),
                 __('Publicaciones'),
                 __('Configuraciones'),
@@ -66,29 +70,59 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 \RyanChandler\FilamentNavigation\FilamentNavigation::make()
                     ->withExtraFields([
+                        \Filament\Forms\Components\Select::make('roles')
+                            ->multiple()
+                            ->options(installed() ? Role::all()->mapWithKeys(function ($role) {
+                                return [$role->name => $role->name];
+                            }) : []),
+                        \Filament\Forms\Components\Select::make('permissions')
+                            ->multiple()
+                            ->options(installed() ? Permission::all()->mapWithKeys(function ($permission) {
+                                return [$permission->name => $permission->name];
+                            }) : []),
                         \Filament\Forms\Components\TextInput::make('id'),
                         \Filament\Forms\Components\TextInput::make('classes'),
                         \Filament\Forms\Components\TextInput::make('icon'),
+                        \Filament\Forms\Components\Checkbox::make('divider'),
                     ])
                     ->itemType('Post', [
-                        \Filament\Forms\Components\Select::make('post_id')
+                        \Filament\Forms\Components\Select::make('url')
                             ->label(__('Post'))
-                            ->options(installed() ? \App\Models\Post::all()->map(function ($post) {
+                            ->options(installed() ? \App\Models\Post::all()->mapWithKeys(function ($post) {
                                 return [
-                                    'id' => $post->title
+                                    $post->slug => $post->title
                                 ];
-                            })->flatten() : [])
+                            }) : [])
+                            ->required(),
+                        \Filament\Forms\Components\Select::make('target')
+                            ->default('_self')
+                            ->options([
+                                '_self' => __('Same tab'),
+                                '_blank' => __('New tab')
+                            ])
+                            ->required()
                     ])
                     ->itemType('Page', [
-                        \Filament\Forms\Components\Select::make('page_id')
+                        \Filament\Forms\Components\Select::make('url')
                             ->label(__('Page'))
-                            ->options(installed() ? \App\Models\Page::all()->map(function ($page) {
+                            ->options(installed() ? \App\Models\Page::all()->mapWithKeys(function ($page) {
                                 return [
-                                    'id' => $page->title
+                                    $page->slug => $page->title
                                 ];
-                            })->flatten() : [])
+                            }) : [])
+                            ->required(),
+                        \Filament\Forms\Components\Select::make('target')
+                            ->default('_self')
+                            ->options([
+                                '_self' => __('Same tab'),
+                                '_blank' => __('New tab')
+                            ])
+                            ->required()
                     ])
 
+            )
+            ->plugin(
+                \lockscreen\FilamentLockscreen\Lockscreen::make()
             )
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -113,6 +147,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 \Filament\Http\Middleware\Authenticate::class,
+                \lockscreen\FilamentLockscreen\Http\Middleware\Locker::class,
             ]);
     }
 

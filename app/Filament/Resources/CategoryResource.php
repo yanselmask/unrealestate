@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
+use App\Filament\Resources\CategoryResource\RelationManagers\FacilitiesRelationManager;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -37,9 +38,24 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('order')
                     ->label(__('Order'))
                     ->maxLength(255),
-                Forms\Components\TextInput::make('type')
+                Forms\Components\Select::make('type')
                     ->label(__('Type'))
-                    ->maxLength(255),
+                    ->reactive()
+                    ->live()
+                    ->options([
+                        'post' => __('Post'),
+                        'property' => __('Property')
+                    ]),
+                // Forms\Components\Select::make('facilities')
+                //     ->label(__('Facilities'))
+                //     ->visible(function ($get) {
+                //         return $get('type') == 'property';
+                //     })
+                //     ->default([])
+                //     ->multiple()
+                //     ->options(\App\Models\Facility::get()->mapWithKeys(function ($facility) {
+                //         return [$facility->id => $facility->name];
+                //     })),
                 Forms\Components\ColorPicker::make('color')
                     ->label(__('Color')),
                 Forms\Components\ColorPicker::make('background')
@@ -101,7 +117,9 @@ class CategoryResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            FacilitiesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

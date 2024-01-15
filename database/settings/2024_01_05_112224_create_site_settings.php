@@ -12,6 +12,7 @@ return new class extends SettingsMigration
         $this->migrator->add('site.site_url', config('app.url', ''));
         $this->migrator->add('site.site_description', 'Your Description');
         $this->migrator->add('site.site_admin_email', 'admin@cment.com');
+        $this->migrator->add('site.site_admin_phone', '');
         $this->migrator->add('site.site_privacy_url', '/pages/privacy');
         $this->migrator->add('site.site_terms_url', '/pages/terms');
         $this->migrator->add('site.site_cookies_url', '/pages/cookies');
@@ -20,8 +21,15 @@ return new class extends SettingsMigration
         $this->migrator->add('site.site_front_js', '');
         $this->migrator->add('site.site_post_editor', 'markdown');
         $this->migrator->add('site.site_page_editor', 'markdown');
+        $this->migrator->add('site.site_footer_heading_download', '');
+        $this->migrator->add('site.site_footer_text_download', '');
+        $this->migrator->add('site.site_footer_image_download', '');
+        $this->migrator->add('site.site_footer_link_android', '');
+        $this->migrator->add('site.site_footer_link_ios', '');
+        $this->migrator->add('site.site_footer_copyright', '');
         $this->migrator->add('site.site_maintenance_status', false);
         $this->migrator->add('site.site_maintenance_message', 'Maintenance Message');
+        $this->migrator->add('site.site_homepage_page', '');
         $this->migrator->add('site.site_social_media_links', []);
     }
 };

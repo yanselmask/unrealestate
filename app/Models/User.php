@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Number;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
     use  HasRoles, HasApiTokens, HasFactory, Notifiable;
+    use \Conner\Likeable\Likeable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +31,13 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'status',
-        'email_verified_at'
+        'email_verified_at',
+        'about',
+        'phone',
+        'socials',
+        'company',
+        'address',
+        'notifications'
     ];
 
     /**
@@ -48,7 +58,9 @@ class User extends Authenticatable implements FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'status' => \App\Enums\UserStatus::class
+        'status' => \App\Enums\UserStatus::class,
+        'socials' => 'array',
+        'notifications' => 'array',
     ];
 
     public function canAccessPanel(Panel $panel): bool
@@ -67,6 +79,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Page::class);
     }
 
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
+
     public function canImpersonate()
     {
         return true;
@@ -75,5 +92,58 @@ class User extends Authenticatable implements FilamentUser
     public function metas()
     {
         return $this->morphMany(Meta::class, 'metable');
+    }
+
+    public function FullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->name . ' ' . $this->lastname
+        );
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function receivedReviews()
+    {
+        return $this->hasManyThrough(Review::class, Property::class);
+    }
+
+    public function reviewsAvg(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>  Number::forHumans($this->receivedReviews->avg('stars') ?? 0)
+        );
+    }
+
+    public function reviewsAvgDecimal(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>  Number::forHumans($this->receivedReviews->avg('stars') ?? 0, 1)
+        );
+    }
+
+    public function profilePhotoUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->profile_photo_path ? Storage::url($this->profile_photo_path) : "https://www.gravatar.com/avatar/" . md5($this->email)
+        );
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    public function sents()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function notificationsArray(): Attribute
+    {
+        return Attribute::get(fn () => $this->notifications ?? []);
     }
 }

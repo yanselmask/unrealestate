@@ -23,6 +23,12 @@ return new class extends Migration
             $table->tinyInteger('status')
                 ->default(1);
             $table->rememberToken();
+            $table->string('phone')->nullable();
+            $table->string('profile_photo_path')->nullable();
+            $table->json('socials')->nullable();
+            $table->string('company')->nullable();
+            $table->string('address')->nullable();
+            $table->json('notifications')->nullable();
             $table->timestamps();
         });
     }

@@ -12,5 +12,6 @@ return new class extends SettingsMigration
         $this->migrator->add('localization.localization_time_format', '');
         $this->migrator->add('localization.localization_timezone', 'UTC');
         $this->migrator->add('localization.localization_week_start', 'sunday');
+        $this->migrator->add('localization.localization_default_currency', config('currency.default'));
     }
 };

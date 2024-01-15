@@ -21,13 +21,16 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('x_icon')->nullable();
             $table->string('image')->nullable();
+            $table->json('facilities')->nullable();
             $table->timestamps();
         });
 
         Schema::create('categorizables', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('category_id');
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+
             $table->morphs('categorizable');
+
+            $table->unique(['category_id', 'categorizable_id', 'categorizable_type'], 'unique_category_assign');
         });
     }
 

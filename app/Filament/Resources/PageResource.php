@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\FrontSectionResource\RelationManagers\SectionsRelationManager;
 use App\Filament\Resources\PageResource\Pages;
 use App\Filament\Resources\PageResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\MetadatasRelationManager;
@@ -35,33 +36,33 @@ class PageResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->label(__('Slug'))
                     ->maxLength(255),
-                Forms\Components\MarkdownEditor::make('content')
-                    ->label(__('Content'))
-                    ->columnSpanFull()
-                    ->visible(setting('site_page_editor') == 'markdown'),
-                \FilamentEditorJs\Forms\Components\EditorJs::make('editorjs_blocks')
-                    ->label(__('Content'))
-                    ->columnSpanFull()
-                    ->visible(setting('site_page_editor') == 'editorjs'),
-                \Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor::make('content')
-                    ->label(__('Content'))
-                    ->minHeight(300)
-                    ->required()
-                    ->visible(setting('site_page_editor') != 'markdown' && setting('site_page_editor') != 'editorjs' && setting('site_page_editor') != 'grapejs')
-                    ->columnSpanFull(),
-                Forms\Components\Section::make(__('Edit in page builder(only for GrapeJS)'))
-                    ->schema([
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make(__('Live Editor'))
-                                ->url(route('pages.editor', request()->route('record') ?? 'not-found'))
-                        ])
-                    ])
-                    ->visible(setting('site_page_editor') == 'grapejs' && request()->route('record')),
-                Forms\Components\Section::make(__('Content(only for GrapeJS)'))
-                    ->schema([
-                        Forms\Components\View::make('filament.components.grapejs_info')
-                    ])
-                    ->visible(setting('site_page_editor') == 'grapejs' && !request()->route('record')),
+                // Forms\Components\MarkdownEditor::make('content')
+                //     ->label(__('Content'))
+                //     ->columnSpanFull()
+                //     ->visible(setting('site_page_editor') == 'markdown'),
+                // \FilamentEditorJs\Forms\Components\EditorJs::make('editorjs_blocks')
+                //     ->label(__('Content'))
+                //     ->columnSpanFull()
+                //     ->visible(setting('site_page_editor') == 'editorjs'),
+                // \Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor::make('content')
+                //     ->label(__('Content'))
+                //     ->minHeight(300)
+                //     ->required()
+                //     ->visible(setting('site_page_editor') != 'markdown' && setting('site_page_editor') != 'editorjs' && setting('site_page_editor') != 'grapejs')
+                //     ->columnSpanFull(),
+                // Forms\Components\Section::make(__('Edit in page builder(only for GrapeJS)'))
+                //     ->schema([
+                //         Forms\Components\Actions::make([
+                //             Forms\Components\Actions\Action::make(__('Live Editor'))
+                //                 ->url(route('pages.editor', request()->route('record') ?? 'not-found'))
+                //         ])
+                //     ])
+                //     ->visible(setting('site_page_editor') == 'grapejs' && request()->route('record')),
+                // Forms\Components\Section::make(__('Content(only for GrapeJS)'))
+                //     ->schema([
+                //         Forms\Components\View::make('filament.components.grapejs_info')
+                //     ])
+                //     ->visible(setting('site_page_editor') == 'grapejs' && !request()->route('record')),
                 Forms\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\Grid::make()
@@ -140,7 +141,8 @@ class PageResource extends Resource
     public static function getRelations(): array
     {
         return [
-            MetadatasRelationManager::class
+            SectionsRelationManager::class,
+            MetadatasRelationManager::class,
         ];
     }
 

@@ -51,8 +51,22 @@ class ManageSiteSettings extends SettingsPage
                         Forms\Components\TextInput::make('site_admin_email')
                             ->label(__('Site Admin Email'))
                             ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_admin_email']))
-                            ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('site_admin_phone')
+                            ->label(__('Site Admin Phone'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_admin_phone']))
+                            ->maxLength(255),
+                        Forms\Components\Select::make('site_homepage_page')
+                            ->label(__('Homepage Link'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_homepage_page']))
+                            ->searchable()
+                            ->options(
+                                \App\Models\Page::all()
+                                    ->mapWithKeys(function ($page) {
+                                        return [$page->id => $page->title];
+                                    })
+                            )
+                            ->required()
                     ])
                     ->columns(2),
                 Forms\Components\Fieldset::make(__('Terms'))
@@ -76,7 +90,7 @@ class ManageSiteSettings extends SettingsPage
                     ->schema([
                         Forms\Components\Radio::make('site_theme_active')
                             ->label(__('Choose the theme you want to activate'))
-                            ->options($themes)
+                            ->options(themes())
                             ->required()
                             ->columns(3)
                             ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_theme_active'])),
@@ -109,6 +123,36 @@ class ManageSiteSettings extends SettingsPage
                             ->label(__('Site Maintenance Message'))
                             ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_maintenance_message']))
                             ->maxLength(255),
+
+                    ])
+                    ->columns(2),
+                Forms\Components\Fieldset::make(__('Footer Settings'))
+                    ->schema([
+                        Forms\Components\TextInput::make('site_footer_heading_download')
+                            ->label(__('Heading Download'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_footer_heading_download']))
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('site_footer_text_download')
+                            ->label(__('Text Download'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_footer_text_download']))
+                            ->maxLength(255),
+                        Forms\Components\FileUpload::make('site_footer_image_download')
+                            ->label(__('Image Downlaod'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_footer_image_download']))
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('site_footer_link_android')
+                            ->label(__('Link Android'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_footer_link_android']))
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('site_footer_link_ios')
+                            ->label(__('Link iOS'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_footer_link_ios']))
+                            ->maxLength(255),
+                        Forms\Components\RichEditor::make('site_footer_copyright')
+                            ->label(__('Copyright'))
+                            ->helperText(view('filament.components.helper_text_setting', ['value' => 'site_footer_copyright']))
+                            ->maxLength(255)
+                            ->columnSpanFull(),
 
                     ])
                     ->columns(2),

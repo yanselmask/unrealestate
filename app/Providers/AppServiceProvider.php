@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrapFive();
+
+        Str::macro('readingMinutes', function ($subject, $wordPerMinute = 200) {
+            return intval(ceil(Str::wordCount(strip_tags($subject)) / $wordPerMinute));
+        });
     }
 }

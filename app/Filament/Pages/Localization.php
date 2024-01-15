@@ -58,6 +58,11 @@ class Localization extends SettingsPage
                         'saturday' => 'Saturday',
                         'sunday' => 'Sunday'
                     ])->default('monday'),
+                Forms\Components\Select::make('localization_default_currency')
+                    ->label(__('Default Currency'))
+                    ->options(site_currencies())
+                    ->helperText(view('filament.components.helper_text_setting', ['value' => 'localization_default_currency']))
+                    ->default('USD'),
             ]);
     }
 

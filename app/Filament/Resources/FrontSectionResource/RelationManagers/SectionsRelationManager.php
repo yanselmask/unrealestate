@@ -20,9 +20,8 @@ class SectionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('key')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('sort_order')
+                    ->label(__('Order')),
             ]);
     }
 
@@ -37,6 +36,8 @@ class SectionsRelationManager extends RelationManager
                     ->label(__('Key')),
                 Tables\Columns\TextColumn::make('theme')
                     ->label(__('Theme')),
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->label(__('Order')),
             ])
             ->filters([
                 //
@@ -45,7 +46,7 @@ class SectionsRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

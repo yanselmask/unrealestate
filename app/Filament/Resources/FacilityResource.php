@@ -53,7 +53,7 @@ class FacilityResource extends Resource
                     ]),
                 Forms\Components\Grid::make(4)
                     ->schema([
-                        Forms\Components\Repeater::make('value')
+                        Forms\Components\Repeater::make('values')
                             ->label(__('Values'))
                             ->visible(
                                 function ($get) {
@@ -65,7 +65,6 @@ class FacilityResource extends Resource
                                     ->required(),
                                 Forms\Components\TextInput::make('icon')
                             ])
-                            //->collapsed()
                             ->grid(3)
                             ->columnSpanFull()
                     ])
@@ -84,11 +83,11 @@ class FacilityResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('type')
                     ->label(__('Type'))
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('icon')
+                    ->label(__('Icon'))
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image')
                     // ->disk('public')

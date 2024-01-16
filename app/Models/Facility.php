@@ -16,7 +16,7 @@ class Facility extends Model
     public $table = 'facilities';
 
     protected $casts = [
-        'value' => 'array'
+        'values' => 'array'
     ];
 
     /**

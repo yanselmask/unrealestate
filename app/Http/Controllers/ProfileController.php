@@ -152,8 +152,8 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $reviewsAboutMe = $user->reviewsReceives->paginate(4, ['*'], 'reviews_about_me');
-        $average = str_replace('.', ',', $user->reviewsAvg);
+        $reviewsAboutMe = $user->receivedReviews()->paginate(4, ['*'], 'reviews_about_me');
+        $average = str_replace('.', ',', $user->reviewsAvgDecimal);
 
         $reviewsByMe = $user->reviews()->paginate(4, ['*'], 'reviews_by_me');
 

@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PropertyResource\RelationManagers\FacilitiesRelationManager;
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
+use App\Filament\Resources\PropertyResource\RelationManagers\OutdoorsRelationManager;
 use App\Models\Property;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -236,7 +238,8 @@ class PropertyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FacilitiesRelationManager::class,
+            OutdoorsRelationManager::class,
         ];
     }
 

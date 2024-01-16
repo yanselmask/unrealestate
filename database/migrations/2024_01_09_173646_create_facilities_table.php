@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->text('value')->nullable();
+            $table->text('values')->nullable();
             $table->string('image')->nullable();
             $table->string('icon')->nullable();
             $table->timestamps();
@@ -39,6 +39,8 @@ return new class extends Migration
         Schema::create('outdoors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('icon')
+                ->nullable();
             $table->string('image')
                 ->nullable();
             $table->timestamps();
@@ -91,16 +93,6 @@ return new class extends Migration
             $table->timestamps();
         });
         //
-        Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
-            $table->integer('stars');
-            $table->text('message')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('property_id');
-            $table->tinyInteger('status')->default(1);
-            $table->timestamps();
-        });
-        //
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -130,11 +122,23 @@ return new class extends Migration
             $table->timestamps();
         });
         //
+        Schema::create('reviews', function (Blueprint $table) {
+            $table->id();
+            $table->integer('stars');
+            $table->text('message')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('property_id')->constrained()->cascadeOnDelete();
+            $table->tinyInteger('status')->default(1);
+            $table->timestamps();
+        });
+        //
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sender_id');
-            $table->unsignedBigInteger('receiver_id');
-            $table->unsignedBigInteger('property_id')->nullable();
+            $table->foreignId('sender_id')->constrained('users', 'id')->cascadeOnDelete();
+            $table->foreignId('receiver_id')->constrained('users', 'id')->cascadeOnDelete();
+            $table->foreignId('property_id')->nullable()
+                ->constrained()
+                ->nullOnDelete();
             $table->timestamp('booking')->nullable();
             $table->text('message')->nullable();
             $table->string('audio')->nullable();
@@ -150,8 +154,8 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::create('category_facility', function (Blueprint $table) {
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('facility_id');
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('facility_id')->constrained()->cascadeOnDelete();
         });
 
         Schema::create('facility_property', function (Blueprint $table) {
@@ -185,7 +189,6 @@ return new class extends Migration
 
         Schema::create('sectionables', function (Blueprint $table) {
             $table->foreignId('front_section_id')->constrained()->cascadeOnDelete();
-
             $table->morphs('sectionable');
             $table->string('sort_order')->nullable();
 
@@ -198,7 +201,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        //
         Schema::dropIfExists('facility_property');
+        //
+        Schema::dropIfExists('category_facility');
+
         Schema::dropIfExists('facilities');
         //
         Schema::dropIfExists('user_reports');
@@ -215,17 +222,16 @@ return new class extends Migration
         //
         Schema::dropIfExists('reviews');
         //
-        Schema::dropIfExists('properties');
-        //
         Schema::dropIfExists('messages');
         //
-        Schema::dropIfExists('listing_as');
+        Schema::dropIfExists('properties');
         //
-        Schema::dropIfExists('category_facility');
+        Schema::dropIfExists('listing_as');
         //
         Schema::dropIfExists('temporary_files');
         //
         Schema::dropIfExists('sectionables');
+        //
         Schema::dropIfExists('front_sections');
     }
 };

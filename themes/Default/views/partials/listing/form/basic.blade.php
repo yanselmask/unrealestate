@@ -14,9 +14,9 @@
         <div class="col-sm-6 mb-3">
             <label class="form-label" for="ap-category">{{ __('Category') }} <span class="text-danger">*</span></label>
             <select x-model="property_type" name="property_type" class="form-select" id="ap-category" required>
-                <option value="" disabled hidden>{{ __('Choose category') }}</option>
-                <option value="1" @selected(old('property_type', $property->property_type) == 1)>{{ __('For rent') }}</option>
+                {{-- <option value="" disabled hidden>{{ __('Choose category') }}</option> --}}
                 <option value="0" @selected(old('property_type', $property->property_type) == 0)>{{ __('For sale') }}</option>
+                <option value="1" @selected(old('property_type', $property->property_type) == 1)>{{ __('For rent') }}</option>
             </select>
         </div>
         <div class="col-sm-6 mb-3">

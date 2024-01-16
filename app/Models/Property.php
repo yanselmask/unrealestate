@@ -49,17 +49,6 @@ class Property extends Model implements HasMedia
         return $this->belongsTo(ListingAs::class);
     }
 
-    public function assignFacility()
-    {
-        return  $this->morphMany(AssignedFacilities::class, 'model');
-    }
-
-    public function assignOutdoor()
-    {
-        return  $this->morphMany(AssignedOutdoors::class, 'model');
-    }
-
-
     public function facilities()
     {
         return $this->belongsToMany(Facility::class)->withPivot('value');
@@ -67,7 +56,7 @@ class Property extends Model implements HasMedia
 
     public function outdoors()
     {
-        return $this->belongsToMany(Outdoor::class)->withPivot('distance');;
+        return $this->belongsToMany(Outdoor::class)->withPivot('distance');
     }
 
     public function scopePublished($query)

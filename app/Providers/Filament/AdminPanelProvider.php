@@ -130,6 +130,7 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\UserLastMonth::class,
             ])
             ->middleware([
+                \Shipu\WebInstaller\Middleware\RedirectIfNotInstalled::class,
                 \Illuminate\Cookie\Middleware\EncryptCookies::class,
                 \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
                 \Illuminate\Session\Middleware\StartSession::class,
@@ -140,7 +141,6 @@ class AdminPanelProvider extends PanelProvider
                 \Filament\Http\Middleware\DisableBladeIconComponents::class,
                 \Filament\Http\Middleware\DispatchServingFilamentEvent::class,
                 \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
-                \Shipu\WebInstaller\Middleware\RedirectIfNotInstalled::class,
             ])
             ->tenantMiddleware([
                 \Hasnayeen\Themes\Http\Middleware\SetTheme::class

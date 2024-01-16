@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\CategoryResource\RelationManagers;
+namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,15 +10,16 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class FacilitiesRelationManager extends RelationManager
+class OutdoorsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'facilities';
+    protected static string $relationship = 'outdoors';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('distance')
+                    ->label(__('Distance'))
                     ->required()
                     ->maxLength(255),
             ]);
@@ -33,10 +34,10 @@ class FacilitiesRelationManager extends RelationManager
                     ->label(__('ID')),
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name')),
-                Tables\Columns\TextColumn::make('type')
-                    ->label(__('Type')),
                 Tables\Columns\TextColumn::make('icon')
                     ->label(__('Icon')),
+                Tables\Columns\TextColumn::make('distance')
+                    ->label(__('Distance')),
             ])
             ->filters([
                 //
@@ -45,6 +46,7 @@ class FacilitiesRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

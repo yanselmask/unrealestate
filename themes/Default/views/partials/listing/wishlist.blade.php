@@ -1,6 +1,8 @@
      <div class="card card-hover card-horizontal mb-4 border-0 shadow-sm">
          <div class="card-img-top position-relative"
-             style="background-image: url({{ $property->getFirstMediaUrl('gallery', 'thumb') }});">
+             style="background-image: url(
+                {{ $property->getFirstMediaUrl('gallery', 'thumb') != '' ? $property->getFirstMediaUrl('gallery', 'thumb') : $property->image_url }}
+                );">
              <a class="stretched-link" href="{{ route('home.listing.show', $property) }}">
              </a>
              <div class="position-absolute start-0 top-0 ps-3 pt-3">

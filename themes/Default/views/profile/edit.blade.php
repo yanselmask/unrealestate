@@ -17,7 +17,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="pe-2">
                         <label class="form-label fw-bold">{{ __('Full name') }}</label>
-                        <div id="name-value">{{ old('name', $user->name) }}</div>
+                        <div id="name-value">{{ old('name', $user->fullname) }}</div>
                     </div>
                     <div data-bs-toggle="tooltip" title="Edit"><a class="nav-link py-0" href="#name-collapse"
                             data-bs-toggle="collapse"><i class="fi-edit"></i></a></div>

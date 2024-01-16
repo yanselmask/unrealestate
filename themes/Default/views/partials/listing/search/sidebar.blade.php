@@ -67,14 +67,19 @@
                   <div class="mb-2 pb-4">
                       <h3 class="h6">{{ __('Additional options') }}</h3>
                       <div class="form-check">
-                          <input @checked(request()->query('verified', '')) class="form-check-input" type="checkbox" id="verified"
-                              name="verified" value="true">
+                          <input @checked(in_array('verified', request()->query('options', []))) class="form-check-input" type="checkbox" id="verified"
+                              name="options[]" value="verified">
                           <label class="form-check-label fs-sm" for="verified">{{ __('Verified') }}</label>
                       </div>
                       <div class="form-check">
-                          <input @checked(request()->query('featured', '')) class="form-check-input" type="checkbox" id="featured"
-                              name="featured" value="true">
+                          <input @checked(in_array('featured', request()->query('options', []))) class="form-check-input" type="checkbox" id="featured"
+                              name="options[]" value="featured">
                           <label class="form-check-label fs-sm" for="featured">{{ __('Featured') }}</label>
+                      </div>
+                      <div class="form-check">
+                          <input @checked(in_array('new', request()->query('options', []))) class="form-check-input" type="checkbox" id="new"
+                              name="options[]" value="new">
+                          <label class="form-check-label fs-sm" for="new">{{ __('New') }}</label>
                       </div>
                   </div>
                   <div class="border-top py-4">

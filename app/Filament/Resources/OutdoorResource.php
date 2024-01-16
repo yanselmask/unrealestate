@@ -28,7 +28,10 @@ class OutdoorResource extends Resource
                     ->label(__('Name'))
                     ->required(),
                 Forms\Components\FileUpload::make('image')
-                    ->label(__('Image'))
+                    ->label(__('Image')),
+                Forms\Components\TextInput::make('icon')
+                    ->label(__('Icon'))
+                    ->columns(1),
             ]);
     }
 
@@ -40,6 +43,8 @@ class OutdoorResource extends Resource
                     ->label(__('ID')),
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name')),
+                Tables\Columns\TextColumn::make('icon')
+                    ->label(__('Icon')),
                 Tables\Columns\ImageColumn::make('image')
                     ->label(__('Image'))
             ])

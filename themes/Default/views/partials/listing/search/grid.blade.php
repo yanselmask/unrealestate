@@ -17,9 +17,12 @@
                   @include('partials.btn_wishlist')
               </div>
               <div class="tns-carousel-inner">
-                  @foreach ($property->getMedia('gallery') as $image)
+                  @forelse ($property->getMedia('gallery') as $image)
                       <img src="{{ $image->getUrl('thumb') }}" alt=" {{ $property->title }}">
-                  @endforeach
+                  @empty
+                      <img style="max-height: 200px;object-fit: cover;" src="{{ $property->image_url }}"
+                          alt=" {{ $property->title }}">
+                  @endforelse
               </div>
           </div>
           <div class="card-body position-relative pb-3">

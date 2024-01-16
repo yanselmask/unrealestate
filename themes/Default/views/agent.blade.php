@@ -53,7 +53,9 @@
                             @endfor
                         </span>
                         <div class="text-muted ms-2">
-                            {{ __('(:count reviews)', ['count' => $agent->receivedReviews->count()]) }}
+                            <a href="{{ route('agent.listing.reviews', $agent) }}">
+                                {{ __('(:count reviews)', ['count' => $agent->receivedReviews->count()]) }}
+                            </a>
                         </div>
                     </div>
                     @if ($agent->bio)

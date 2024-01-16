@@ -30,9 +30,9 @@ class HomeController extends Controller
 
     public function agentListing(User $agent)
     {
-        $rents = $agent->properties()->where('property_type', 1)->paginate();
+        $rents = $agent->properties()->where('property_type', 1)->paginate(9, ['*'], 'pages_for_rents');
         $sales =
-            $agent->properties()->where('property_type', 0)->paginate();
+            $agent->properties()->where('property_type', 0)->paginate(9, ['*'], 'pages_for_sales');
 
         return view('agent', compact('agent', 'rents', 'sales'));
     }
@@ -293,6 +293,7 @@ class HomeController extends Controller
         $posted = $request->query('posted');
         $verified = $request->query('verified');
         $featured = $request->query('featured');
+        $options = $request->query('options');
         $sort = $request->query('sort_by');
 
         $types = Category::PropertyType()->get();
@@ -318,11 +319,28 @@ class HomeController extends Controller
                     };
                 });
             })
-            ->when($verified, function ($query) {
-                return $query->whereNotNull('verified');
-            })
-            ->when($featured, function ($query) {
-                return $query->whereNotNull('featured');
+            ->when($options, function ($query) use ($options) {
+                return $query->when(in_array('featured', $options), function ($query) {
+                    return $query->where(function ($query) {
+                        $query->whereNotNull('featured')
+                            ->when(in_array('verified', request()->query('options')), function ($query) {
+                                $query->orWhereNotNull('verified');
+                            });
+                    });
+                })
+                    ->when(in_array('verified', $options), function ($query) {
+                        return $query->where(function ($query) {
+                            $query->whereNotNull('verified')
+                                ->when(in_array('featured', request()->query('options')), function ($query) {
+                                    $query->orWhereNotNull('featured');
+                                });
+                        });
+                    })
+                    ->when(in_array('new', $options), function ($query) {
+                        return $query->where(function ($query) {
+                            $query->whereDate('created_at', '>=', now()->subDays(7));
+                        });
+                    });
             })
             ->when($sort, function ($query) use ($sort) {
                 return match ($sort) {

@@ -16,7 +16,7 @@
         </a>
     </h3>
     <p class="mb-3">
-        {{ str_limit($post->content) }}
+        {{ str_limit(strip_tags($post->content)) }}
     </p>
     <a class="d-flex align-items-center text-decoration-none" href="#">
         <img class="rounded-circle" src="{{ $post->author_image }}" width="48" alt="{{ $post->author_name }}">

@@ -12,7 +12,7 @@
             <a class="btn btn-lg btn-primary" href="{{ $content[0]['data']['btn_link'] }}"
                 @if ($content[0]['data']['modal'] == 'no') target="{{ $content[0]['data']['btn_target'] }}" @endif
                 @if ($content[0]['data']['modal'] == 'yes') data-bs-toggle="modal" @endif>
-                {{ $content[0]['data']['btn_text'] }}</a>
+                {!! $content[0]['data']['btn_text'] !!}</a>
         </div>
     </div>
 </section>

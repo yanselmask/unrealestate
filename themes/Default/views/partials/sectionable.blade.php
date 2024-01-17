@@ -49,4 +49,39 @@
              'content' => $section->content,
          ])
      @endif
+     @if ($section->key == 'about')
+         @include('sections.about', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'choose')
+         @include('sections.choose', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'works')
+         @include('sections.works', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'team')
+         @include('sections.team', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'testimonial')
+         @include('sections.testimonial', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'jumbotron')
+         @include('sections.jumbotron', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'accordion')
+         @include('sections.accordion', [
+             'content' => $section->content,
+         ])
+     @endif
  @endforeach

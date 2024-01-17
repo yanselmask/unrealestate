@@ -4,7 +4,7 @@
 <section class="pb-lg-4 container my-5 pt-5">
     <div class="row pt-md-2 pt-lg-0 pt-0">
         <div class="col-xl-7 col-lg-6 col-md-5 order-md-2 mb-lg-3 mb-4">
-            <img src="{{ Storage::url($content[0]['data']['image']) }}" alt="{!! $content[0]['data']['heading'] !!}" />
+            <img src="{{ $content[0]['data']['image'] }}" alt="{!! $content[0]['data']['heading'] !!}" />
         </div>
         <div class="col-xl-5 col-lg-6 col-md-7 order-md-1 pt-xl-5 pe-lg-0 text-md-start mb-3 text-center">
             <h1 class="display-4 mt-lg-5 mb-md-4 pt-md-4 pb-lg-2 mb-3">
@@ -79,8 +79,10 @@
                         <div class="d-flex align-items-center w-100 py-sm-0 ps-sm-3 pb-4 ps-2 pt-2">
                             <i class="fi-cash fs-lg text-muted me-2"></i>
                             <span class="text-muted">{{ __('Price') }}</span>
-                            <div class="range-slider pe-sm-3 pe-0" data-start-min="450" data-min="0" data-max="1000"
-                                data-step="1">
+                            <div class="range-slider pe-sm-3 pe-0"
+                                data-start-min="{{ $content[0]['data']['start_price'] ?? 100 }}"
+                                data-min="{{ $content[0]['data']['min_price'] ?? min_price() }}"
+                                data-max="{{ $content[0]['data']['max_price'] ?? max_price() }}" data-step="1">
                                 <div class="range-slider-ui"></div>
                                 <input name="price" class="form-control range-slider-value-min" type="hidden" />
                             </div>

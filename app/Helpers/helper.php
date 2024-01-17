@@ -1,20 +1,55 @@
 <?php
 
+use App\Models\Currency;
 use App\Models\Property;
 use App\Settings\LocalizationSetting;
 use App\Settings\MailSetting;
 use App\Settings\SiteSetting;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Qirolab\Theme\Theme;
 use Illuminate\Support\Str;
 
+if (!function_exists('min_price')) {
+    function min_price()
+    {
+        $minPrice = DB::table('currency_property')
+            ->where('currency_id', currency_active())
+            ->min('price');
+
+        return $minPrice ?? 0;
+    }
+}
+
+if (!function_exists('max_price')) {
+    function max_price()
+    {
+        $maxPrice = DB::table('currency_property')
+            ->where('currency_id', currency_active())
+            ->max('price');
+
+        return $maxPrice ?? 1000;
+    }
+}
+
 if (!function_exists('installed')) {
     function installed()
     {
         return file_exists(storage_path('installed'));
+    }
+}
+
+if (!function_exists('site_currency')) {
+    function site_currency($code = null, $value = null)
+    {
+        if ($value) {
+            return currency()->getCurrency($code ?? setting('localization_default_currency'))[$value];
+        }
+
+        return currency()->getCurrency($code ?? setting('localization_default_currency'));
     }
 }
 
@@ -35,6 +70,32 @@ if (!function_exists('currency_price')) {
     function currency_price($value, $currency = 'USD', $locale = null)
     {
         return Number::currency($value, $currency, $locale);
+    }
+}
+
+if (!function_exists('currency_active')) {
+    function currency_active($id = 'id')
+    {
+        return Currency::select($id)->where('code', currency()->getUserCurrency())->first()->$id;
+    }
+}
+
+if (!function_exists('price_value')) {
+    function price_value($property_id, $currency_id, $value = 'price')
+    {
+        if ($property_id) {
+            $property = Property::findOrFail($property_id);
+        } else {
+            $property = new Property();
+        }
+
+        $currency = $property->prices()->where('currency_id', $currency_id)->first();
+
+        if ($currency) {
+            return $currency->pivot->$value;
+        }
+
+        return '';
     }
 }
 

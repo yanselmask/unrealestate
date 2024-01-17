@@ -132,6 +132,7 @@ class ProfileController extends Controller
 
         $properties = Property::whereLikedBy($user->id) // find only articles where user liked them
             ->with('likeCounter') // highly suggested to allow eager load
+            ->Published()
             ->get();
 
         return view('profile.wishlist', compact('user', 'properties'));

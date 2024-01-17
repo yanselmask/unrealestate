@@ -71,41 +71,43 @@
                     @endif
                 </div>
             </div>
-            <div class="col-xl-5 col-lg-6 offset-xl-1">
-                <h4 class="h5">{{ __('Recent Posts') }}</h4>
-                @foreach ($recents as $article)
-                    <article class="d-flex align-items-start" style="max-width: 640px">
-                        <a class="d-none d-sm-block me-sm-4 mb-sm-0 mb-3 flex-shrink-0"
-                            href="{{ route('blog.show', $article) }}">
-                            <img class="rounded-3" src="{{ $article->image_thumb_url }}" width="100"
-                                alt="{{ $article->title }}" />
-                        </a>
-                        <div>
-                            <h6 class="fs-xs fw-normal text-uppercase text-primary mb-1">
-                                {{ $article->categories->pluck('title')->join(', ') }}
-                            </h6>
-                            <h5 class="fs-base mb-2">
-                                <a class="nav-link"
-                                    href="{{ route('blog.show', $article) }}">{{ $article->title }}</a>
-                            </h5>
-                            <p class="fs-sm mb-2">
-                                {{ str_limit($article->content) }}
-                            </p>
-                            <a class="nav-link nav-link-muted d-inline-block fs-xs fw-normal me-3 p-0"
+            @if ($recents->count() > 0)
+                <div class="col-xl-5 col-lg-6 offset-xl-1">
+                    <h4 class="h5">{{ __('Recent Posts') }}</h4>
+                    @foreach ($recents as $article)
+                        <article class="d-flex align-items-start" style="max-width: 640px">
+                            <a class="d-none d-sm-block me-sm-4 mb-sm-0 mb-3 flex-shrink-0"
                                 href="{{ route('blog.show', $article) }}">
-                                <i
-                                    class="fi-calendar mt-n1 fs-sm me-1 align-middle opacity-70"></i>{{ site_date($article->created_at) }}
+                                <img class="rounded-3" src="{{ $article->image_thumb_url }}" width="100"
+                                    alt="{{ $article->title }}" />
                             </a>
-                            <a class="nav-link nav-link-muted d-inline-block fs-xs fw-normal me-3 p-0"
-                                href="{{ route('blog.show', $article) }}#comments">
-                                <i
-                                    class="fi-chat-circle mt-n1 fs-sm me-1 align-middle opacity-70"></i>{{ __(':count comments', ['count' => $article->comments->count()]) }}
-                            </a>
-                        </div>
-                    </article>
-                    <hr class="text-dark my-4 opacity-10" />
-                @endforeach
-            </div>
+                            <div>
+                                <h6 class="fs-xs fw-normal text-uppercase text-primary mb-1">
+                                    {{ $article->categories->pluck('title')->join(', ') }}
+                                </h6>
+                                <h5 class="fs-base mb-2">
+                                    <a class="nav-link"
+                                        href="{{ route('blog.show', $article) }}">{{ $article->title }}</a>
+                                </h5>
+                                <p class="fs-sm mb-2">
+                                    {{ str_limit(strip_tags($article->content)) }}
+                                </p>
+                                <a class="nav-link nav-link-muted d-inline-block fs-xs fw-normal me-3 p-0"
+                                    href="{{ route('blog.show', $article) }}">
+                                    <i
+                                        class="fi-calendar mt-n1 fs-sm me-1 align-middle opacity-70"></i>{{ site_date($article->created_at) }}
+                                </a>
+                                <a class="nav-link nav-link-muted d-inline-block fs-xs fw-normal me-3 p-0"
+                                    href="{{ route('blog.show', $article) }}#comments">
+                                    <i
+                                        class="fi-chat-circle mt-n1 fs-sm me-1 align-middle opacity-70"></i>{{ __(':count comments', ['count' => $article->comments->count()]) }}
+                                </a>
+                            </div>
+                        </article>
+                        <hr class="text-dark my-4 opacity-10" />
+                    @endforeach
+                </div>
+            @endif
         </div>
         <!-- Banner-->
         <div class="bg-dark rounded-3">

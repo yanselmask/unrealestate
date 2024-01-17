@@ -2,7 +2,7 @@
      @foreach ($menu->items as $item)
          @if ($item['children'])
              <!-- Menu items-->
-             <li class="nav-item dropdown active">
+             <li class="nav-item dropdown">
                  <a class="nav-link dropdown-toggle {{ $item['data']['classes'] }}"
                      @if ($item['type'] == 'post') href="{{ route('blog.show', $item['data']['url']) }}" @endif
                      @if ($item['type'] == 'page') href="{{ route('pages.show', $item['data']['url']) }}" @endif
@@ -22,7 +22,7 @@
              </li>
          @else
              <!-- Menu items-->
-             <li class="nav-item">
+             <li class="nav-item @isset($item['data']['divider']) dropdown me-lg-2 @endisset">
                  <a class="nav-link {{ $item['data']['classes'] }}"
                      @if ($item['type'] == 'post') href="{{ route('blog.show', $item['data']['url']) }}" @endif
                      @if ($item['type'] == 'page') href="{{ route('pages.show', $item['data']['url']) }}" @endif
@@ -34,8 +34,6 @@
                      @endisset
                  </a>
              </li>
-             <span class="d-none d-lg-block position-absolute top-50 translate-middle-y border-end end-0"
-                 style="width: 1px; height: 30px;"></span>
          @endif
      @endforeach
  @endif

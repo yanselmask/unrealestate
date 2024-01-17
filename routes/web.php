@@ -25,6 +25,9 @@ Route::controller(HomeController::class)
         //Pages
         Route::get('/pages/{page}', 'showPage')->name('pages.show');
 
+        //Currency
+        Route::get('/currency/{currency}', 'changeCurrency')->name('currency.change');
+
         //Listing
         Route::get('/agent/{agent}/', 'agentListing')->name('agent.listing');
         Route::get('/agent/{agent}/reviews', 'agentReviewsListing')->name('agent.listing.reviews');

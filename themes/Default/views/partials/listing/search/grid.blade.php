@@ -36,8 +36,8 @@
               </h3>
               <p class="fs-sm text-muted mb-2">{{ $property->address }}</p>
               <div class="fw-bold">
-                  <i
-                      class="fi-cash mt-n1 lead me-2 align-middle opacity-70"></i>{{ currency_price($property->price[0]['price'], 'EUR') }}
+                  <i class="fi-cash mt-n1 lead me-2 align-middle opacity-70"></i>
+                  {{ $property->price }}
               </div>
           </div>
           <div class="card-footer d-flex align-items-center justify-content-center text-nowrap mx-3 pt-3">

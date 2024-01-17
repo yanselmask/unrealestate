@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'driver' => 'database',
+    'driver' => file_exists(storage_path('/installed')) ? 'database' : 'filesystem',
 
     /*
     |--------------------------------------------------------------------------

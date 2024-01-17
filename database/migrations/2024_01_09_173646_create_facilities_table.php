@@ -108,11 +108,10 @@ return new class extends Migration
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->text('description');
-            $table->json('price');
             $table->string('rent_interval')->nullable();
             $table->integer('rent_duration')->nullable();
             $table->string('main_image')->nullable();
-            $table->string('threed_image')->nullable();
+            $table->string('virtual_link')->nullable();
             $table->string('video_link')->nullable();
             $table->json('contact')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
@@ -157,19 +156,25 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('facility_id')->constrained()->cascadeOnDelete();
         });
-
+        //
         Schema::create('facility_property', function (Blueprint $table) {
             $table->foreignId('facility_id')->constrained()->cascadeOnDelete();
             $table->foreignId('property_id')->constrained()->cascadeOnDelete();
             $table->text('value')->nullable(); // Agregar el campo adicional 'value'
         });
-
+        //
         Schema::create('outdoor_property', function (Blueprint $table) {
             $table->foreignId('property_id')->constrained()->cascadeOnDelete();
             $table->foreignId('outdoor_id')->constrained()->cascadeOnDelete();
             $table->string('distance')->nullable();
         });
-
+        //
+        Schema::create('currency_property', function (Blueprint $table) {
+            $table->foreignId('currency_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('property_id')->constrained()->cascadeOnDelete();
+            $table->bigInteger('price')->nullable();
+        });
+        //
         Schema::create('temporary_files', function (Blueprint $table) {
             $table->id();
             $table->string('folder');
@@ -177,7 +182,7 @@ return new class extends Migration
             $table->string('extension');
             $table->timestamps();
         });
-
+        //
         Schema::create('front_sections', function (Blueprint $table) {
             $table->id();
             $table->string('heading')->nullable();
@@ -186,7 +191,7 @@ return new class extends Migration
             $table->json('content')->nullable();
             $table->timestamps();
         });
-
+        //
         Schema::create('sectionables', function (Blueprint $table) {
             $table->foreignId('front_section_id')->constrained()->cascadeOnDelete();
             $table->morphs('sectionable');
@@ -205,7 +210,9 @@ return new class extends Migration
         Schema::dropIfExists('facility_property');
         //
         Schema::dropIfExists('category_facility');
-
+        //
+        Schema::dropIfExists('currency_property');
+        //
         Schema::dropIfExists('facilities');
         //
         Schema::dropIfExists('user_reports');

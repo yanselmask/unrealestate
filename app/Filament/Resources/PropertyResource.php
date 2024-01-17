@@ -6,6 +6,7 @@ use App\Filament\Resources\PropertyResource\RelationManagers\FacilitiesRelationM
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
 use App\Filament\Resources\PropertyResource\RelationManagers\OutdoorsRelationManager;
+use App\Filament\Resources\PropertyResource\RelationManagers\PricesRelationManager;
 use App\Models\Property;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -115,46 +116,10 @@ class PropertyResource extends Resource
                     ]),
                 Forms\Components\Fieldset::make(__('Property details'))
                     ->schema([
-                        Forms\Components\RichEditor::make('description')
+                        Forms\Components\MarkdownEditor::make('description')
                             ->label(__('Description'))
                             ->required()
                             ->columnSpanFull(),
-                    ]),
-                Forms\Components\Fieldset::make(__('Price'))
-                    ->schema([
-                        Forms\Components\Select::make('rent_interval')
-                            ->label(__('Rent Interval'))
-                            ->options([
-                                'day' => __('Day'),
-                                'week' => __('Week'),
-                                'month' => __('Month'),
-                                'year' => __('Year'),
-                            ])
-                            ->visible(function ($get) {
-                                return $get('property_type') == 1;
-                            })
-                            ->required(),
-                        Forms\Components\TextInput::make('rent_duration')
-                            ->label(__('Rent Durations'))
-                            ->visible(function ($get) {
-                                return $get('property_type') == 1;
-                            }),
-                        Forms\Components\Repeater::make('price')
-                            ->schema([
-                                Forms\Components\Select::make('code')
-                                    ->options(site_currencies())
-                                    ->reactive()
-                                    ->live()
-                                    ->default(setting('localization_default_currency'))
-                                    ->label(__('Currency')),
-                                Forms\Components\TextInput::make('price')
-                                    ->prefix(function ($get) {
-                                        return $get('code');
-                                    })
-                                    ->label(__('Price')),
-                            ])
-                            ->columnSpanFull()
-                            ->required(),
                     ]),
                 Forms\Components\FieldSet::make(__('Photos'))
                     ->schema([
@@ -167,10 +132,11 @@ class PropertyResource extends Resource
                             ->multiple()
                             ->reorderable()
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('threed_image')
-                            ->label(__('3D Image')),
+                        Forms\Components\TextInput::make('virtual_link')
+                            ->label(__('Virtual Tour')),
                         Forms\Components\TextInput::make('video_link')
-                            ->label(__('Video Link')),
+                            ->label(__('Video Link'))
+                            ->prefix(__('https://www.youtube.com/embed/')),
                     ]),
                 Forms\Components\Fieldset::make(__('Options'))
                     ->schema([
@@ -188,6 +154,10 @@ class PropertyResource extends Resource
                             ])
                             ->default(1)
                             ->required(),
+                        Forms\Components\DatePicker::make('verified')
+                            ->label(__('Verified')),
+                        Forms\Components\DatePicker::make('featured')
+                            ->label(__('Featured')),
                     ]),
                 Forms\Components\Fieldset::make(__('Contacts'))
                     ->schema([
@@ -240,6 +210,7 @@ class PropertyResource extends Resource
         return [
             FacilitiesRelationManager::class,
             OutdoorsRelationManager::class,
+            PricesRelationManager::class,
         ];
     }
 

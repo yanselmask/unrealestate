@@ -11,7 +11,7 @@
                 <span class="badge bg-primary mb-3 me-2">{{ __('Featured') }}</span>
             @endif
             <h2 class="h3 border-bottom mb-4 pb-4">
-                {{ currency_price($property->price[0]['price'], 'EUR') }}
+                {{ $property->price }}
                 @if ($property->property_type == 1)
                     <span class="d-inline-block fs-base fw-normal text-body">/{{ $property->rent_interval }}</span>
                 @endif
@@ -22,6 +22,10 @@
             @include('partials.listing.single.details')
             <!-- Amenities-->
             @include('partials.listing.single.amenities')
+            <!-- Property Virtual -->
+            @include('partials.listing.single.virtual')
+            <!-- Property Video -->
+            @include('partials.listing.single.video')
             <!-- Post meta-->
             @include('partials.listing.single.post_meta')
             <!-- Reviews Head-->

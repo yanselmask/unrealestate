@@ -11,6 +11,18 @@
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <li class="nav-item dropdown d-lg-block order-lg-3 my-n2 me-3">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">{{ currency()->getUserCurrency() }}</a>
+            <ul class="dropdown-menu">
+                @foreach (currency()->getCurrencies() as $currency)
+                    <li>
+                        <a class="dropdown-item @if (currency()->getUserCurrency() == $currency['code']) active @endif"
+                            href="{{ route('currency.change', $currency['code']) }}">{{ $currency['name'] . ' - ' . $currency['code'] }}</a>
+                    </li>
+                @endforeach
+            </ul>
+        </li>
         @guest
             <a class="btn btn-sm text-primary d-none d-lg-block order-lg-3" href="{{ route('login') }}">
                 <i class="fi-user me-2"></i>{{ __('Sign in') }}
@@ -28,11 +40,12 @@
                         <div class="ps-2">
                             <h6 class="fs-base mb-0">{{ $user->fullname }}</h6>
                             <span class="star-rating star-rating-sm">
-                                <i class="star-rating-icon fi-star-filled active"></i>
-                                <i class="star-rating-icon fi-star-filled active"></i>
-                                <i class="star-rating-icon fi-star-filled active"></i>
-                                <i class="star-rating-icon fi-star-filled active"></i>
-                                <i class="star-rating-icon fi-star-filled active"></i>
+                                @for ($i = 1; $i <= Number::forHumans($user->reviewsAvg); $i++)
+                                    <i class="star-rating-icon fi-star-filled active"></i>
+                                @endfor
+                                @for ($i = Number::forHumans($user->reviewsAvg) + 1; $i <= 5; $i++)
+                                    <i class="star-rating-icon fi-star-filled"></i>
+                                @endfor
                             </span>
                             <div class="fs-xs py-2">{{ $user->phone }}<br>{{ $user->email }}</div>
                         </div>
@@ -85,11 +98,12 @@
                         <div class="dropdown-menu">
                             <div class="ps-3">
                                 <span class="star-rating star-rating-sm">
-                                    <i class="star-rating-icon fi-star-filled active"></i>
-                                    <i class="star-rating-icon fi-star-filled active"></i>
-                                    <i class="star-rating-icon fi-star-filled active"></i>
-                                    <i class="star-rating-icon fi-star-filled active"></i>
-                                    <i class="star-rating-icon fi-star-filled active"></i>
+                                    @for ($i = 1; $i <= Number::forHumans($user->reviewsAvg); $i++)
+                                        <i class="star-rating-icon fi-star-filled active"></i>
+                                    @endfor
+                                    @for ($i = Number::forHumans($user->reviewsAvg) + 1; $i <= 5; $i++)
+                                        <i class="star-rating-icon fi-star-filled"></i>
+                                    @endfor
                                 </span>
                                 <div class="fs-xs py-2">{{ $user->phone }}<br>{{ $user->email }}</div>
                             </div>

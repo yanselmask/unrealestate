@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Currency;
 use App\Models\FrontSection;
 use App\Models\ListingAs;
 use App\Models\Message;
@@ -21,6 +22,20 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class HomeController extends Controller
 {
+
+    public function changeCurrency($currency)
+    {
+        $previousUrl = url()->previous();
+
+        if (str_contains($previousUrl, 'currency=')) {
+            $url = preg_replace('/(currency=.{3})/', 'currency=' . $currency, $previousUrl);
+        } else {
+            $url = $previousUrl . (str_contains($previousUrl, '?') ? '&' : '?') . 'currency=' . $currency;
+        }
+
+        return redirect($url);
+    }
+
     public function index()
     {
         $page = Page::findOrFail(setting('site_homepage_page'));
@@ -109,6 +124,7 @@ class HomeController extends Controller
 
     public function saveListing($request, $property = new Property())
     {
+
         $request->validate([
             'title' => 'required',
             'property_type' => 'required',
@@ -127,14 +143,7 @@ class HomeController extends Controller
             'contact.*' => 'nullable|max:255'
         ]);
 
-        $price = [];
         $contact = [];
-
-        if ($request->price) {
-            foreach ($request->price as $k => $v) {
-                $price[] = ['code' => $k, 'price' => $v];
-            }
-        }
 
         if ($request->contact) {
             foreach ($request->contact as $k => $v) {
@@ -153,7 +162,6 @@ class HomeController extends Controller
         $property->state = $request->state;
         $property->zip_code = $request->zip_code;
         $property->address = $request->address;
-        $property->price = $price;
         $property->contact = $contact;
         $property->description = $request->description;
         $property->user_id = $request->user()->id;
@@ -234,6 +242,15 @@ class HomeController extends Controller
             }
         }
 
+        if ($request->price) {
+            $keyEnd = [];
+            foreach ($request->price as $k => $v) {
+                $keyEnd[$k] = ['price' => str_replace('.', '', str_replace(',', '', $v))];
+            }
+
+            $property->prices()->sync($keyEnd);
+        }
+
 
         if ($request->outdoors) {
             $keyEnd = [];
@@ -265,7 +282,7 @@ class HomeController extends Controller
     {
         $recents = [];
         $sortByReviews = request()->query('sort_by');
-        $average = str_replace('.', ',', $property->user->reviewsAvgDecimal);
+        $average = str_replace('.', ',', $property->reviews->avg('stars'));
 
         $reviews = $property->reviews()
             ->when($sortByReviews, function ($query) use ($sortByReviews) {
@@ -295,6 +312,13 @@ class HomeController extends Controller
         $featured = $request->query('featured');
         $options = $request->query('options');
         $sort = $request->query('sort_by');
+        $min_price = $request->query('min_price');
+        $max_price = $request->query('max_price');
+        $facility = $request->query('facility');
+        $terms = $request->query('terms');
+        $checks = $request->query('checks');
+
+        $facilities = Facility::all();
 
         $types = Category::PropertyType()->get();
 
@@ -342,14 +366,72 @@ class HomeController extends Controller
                         });
                     });
             })
+            ->when($min_price, function ($query) use ($min_price) {
+                return $query->whereHas('prices', function ($query) use ($min_price) {
+                    return $query->where('currency_id', currency_active())
+                        ->where('price', '>=', $min_price);
+                });
+            })
+            ->when($max_price, function ($query) use ($max_price) {
+                return $query->whereHas('prices', function ($query) use ($max_price) {
+                    return $query->where('currency_id', currency_active())
+                        ->where('price', '<=', $max_price);
+                });
+            })
+            ->when($facility, function ($query) use ($facility) {
+                return $query->whereHas('facilities', function ($query) use ($facility) {
+                    $facilityIds = array_keys($facility);
+                    $facilityValues = array_values($facility);
+
+                    return $query->whereIn('facility_id', $facilityIds)
+                        ->whereIn('value', $facilityValues);
+                });
+            })
+            ->when($terms, function ($query) use ($terms) {
+                return $query->whereHas('facilities', function ($query) use ($terms) {
+                    $facilityIds = array_keys($terms);
+                    $facilityValues = array_values($terms);
+
+                    return $query->whereIn('facility_id', $facilityIds)
+                        ->where('value', 'like', '%' . implode('', $facilityValues) . '%');
+                });
+            })
+            ->when($checks, function ($query) use ($checks) {
+                return $query->whereHas('facilities', function ($query) use ($checks) {
+                    foreach ($checks as $facilityId => $facilityValues) {
+                        $query->where(function ($subquery) use ($facilityId, $facilityValues) {
+                            $subquery->where('facility_id', $facilityId)
+                                ->whereIn('value', $facilityValues);
+                        });
+                    }
+                });
+            })
             ->when($sort, function ($query) use ($sort) {
                 return match ($sort) {
+                    'newest' => $query->orderByDesc('created_at'),
+                    'popularity' => $query->orderBy(DB::table('likeable_like_counters')->select('count')->whereColumn('likeable_like_counters.likeable_id', 'properties.id'), 'desc'),
+                    'low-high-price' => $query->orderBy(
+                        DB::table('currency_property')
+                            ->select('price')
+                            ->where('currency_property.currency_id', '=', currency_active())
+                            ->whereColumn('currency_property.property_id', 'properties.id')
+                    ),
+                    'high-low-price' => $query->orderBy(
+                        DB::table('currency_property')
+                            ->select('price')
+                            ->where('currency_property.currency_id', '=', currency_active())
+                            ->whereColumn('currency_property.property_id', 'properties.id'),
+                        'desc'
+                    ),
+                    'high-rating' => $query->withCount('reviews')->orderBy('reviews_count', 'desc'),
+                    'average-rating' => $query->withAvg('reviews', 'stars')->orderBy('reviews_avg_stars', 'desc'),
                     default => $query,
                 };
             })
-            ->paginate(10);
+            ->Published()
+            ->paginate(9);
 
-        return view('search', compact('types', 'properties'));
+        return view('search', compact('types', 'properties', 'facilities'));
     }
 
     public function showPage(Page $page)

@@ -41,6 +41,13 @@ class FrontSectionResource extends Resource
                                 'contact' => __('Contact'),
                                 'info_contact' => __('Card Info'),
                                 'city' => __('City'),
+                                'about' => __('About'),
+                                'choose' => __('Choose'),
+                                'works' => __('Works'),
+                                'team' => __('Team'),
+                                'testimonial' => __('Testimonial'),
+                                'jumbotron' => __('Jumbotron'),
+                                'accordion' => __('Accordion')
                             ])
                             ->label(__('Key')),
                         Forms\Components\Select::make('theme')
@@ -60,6 +67,15 @@ class FrontSectionResource extends Resource
                                         Forms\Components\FileUpload::make('image')
                                             ->label(__('Image'))
                                             ->required(),
+                                        // Forms\Components\TextInput::make('start_price')
+                                        //     ->label(__('Start Price'))
+                                        //     ->required(),
+                                        // Forms\Components\TextInput::make('min_price')
+                                        //     ->label(__('Min Price'))
+                                        //     ->required(),
+                                        // Forms\Components\TextInput::make('max_price')
+                                        //     ->label(__('Max Price'))
+                                        //     ->required(),
                                     ]),
                                 Forms\Components\Builder\Block::make('category')
                                     ->schema([
@@ -291,6 +307,164 @@ class FrontSectionResource extends Resource
                                                     ->required(),
                                             ])
                                     ]),
+                                Forms\Components\Builder\Block::make('about')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                            ->required(),
+                                        Forms\Components\Textarea::make('description')
+                                            ->label(__('Description'))
+                                            ->required(),
+                                        Forms\Components\TextInput::make('btn_text')
+                                            ->label(__('Button Text'))
+                                            ->required(),
+                                        Forms\Components\TextInput::make('btn_link')
+                                            ->label(__('Button Link'))
+                                            ->required(),
+                                        Forms\Components\Select::make('btn_target')
+                                            ->label(__('Button Target'))
+                                            ->default('_self')
+                                            ->options([
+                                                '_self' => __('Same tab'),
+                                                '_blank' => __('New tab')
+                                            ])
+                                            ->required(),
+                                        Forms\Components\Repeater::make('images')
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label(__('Image'))
+                                                    ->required(),
+                                            ])
+                                    ]),
+                                Forms\Components\Builder\Block::make('choose')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                            ->required(),
+                                        Forms\Components\Repeater::make('chooses')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('icon')
+                                                    ->label(__('Icon'))
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('heading')
+                                                    ->label(__('Heading'))
+                                                    ->required(),
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label(__('Description'))
+                                                    ->required(),
+                                            ])
+                                    ]),
+                                Forms\Components\Builder\Block::make('works')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                            ->required(),
+                                        Forms\Components\FileUpload::make('image')
+                                            ->label(__('Image'))
+                                            ->required(),
+                                        Forms\Components\Repeater::make('chooses')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('heading')
+                                                    ->label(__('Heading'))
+                                                    ->required(),
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label(__('Description'))
+                                                    ->required(),
+                                            ])
+                                    ]),
+                                Forms\Components\Builder\Block::make('team')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                            ->required(),
+                                        Forms\Components\Repeater::make('team')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->label(__('Name'))
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('position')
+                                                    ->label(__('Position'))
+                                                    ->required(),
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label(__('Image'))
+                                                    ->required(),
+                                                Forms\Components\Repeater::make('social')
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('key')
+                                                            ->label(__('Social Name'))
+                                                            ->required(),
+                                                        Forms\Components\TextInput::make('value')
+                                                            ->label(__('Social Link'))
+                                                            ->required(),
+                                                    ])
+                                            ])
+                                    ]),
+                                Forms\Components\Builder\Block::make('testimonial')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                            ->required(),
+                                        Forms\Components\Repeater::make('testimonials')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->label(__('Name'))
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('position')
+                                                    ->label(__('Position'))
+                                                    ->required(),
+                                                Forms\Components\FileUpload::make('user_image')
+                                                    ->label(__('User Image'))
+                                                    ->required(),
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label(__('Image'))
+                                                    ->required(),
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label(__('Description'))
+                                                    ->required(),
+                                            ])
+                                    ]),
+                                Forms\Components\Builder\Block::make('jumbotron')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                            ->required(),
+                                        Forms\Components\Textarea::make('description')
+                                            ->label(__('Description'))
+                                            ->required(),
+                                        Forms\Components\FileUpload::make('image')
+                                            ->label(__('Image'))
+                                            ->required(),
+                                        Forms\Components\TextInput::make('btn_text')
+                                            ->label(__('Butotn Text'))
+                                            ->required(),
+                                        Forms\Components\TextInput::make('btn_link')
+                                            ->label(__('Butotn Link'))
+                                            ->required(),
+                                        Forms\Components\Select::make('btn_target')
+                                            ->label(__('Button Target'))
+                                            ->default('_self')
+                                            ->options([
+                                                '_self' => __('Same tab'),
+                                                '_blank' => __('New tab')
+                                            ])
+                                            ->required(),
+                                    ]),
+                                Forms\Components\Builder\Block::make('accordion')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading')),
+                                        Forms\Components\Repeater::make('options')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('key')
+                                                    ->label(__('Key'))
+                                                    ->required(),
+                                                Forms\Components\Textarea::make('value')
+                                                    ->label(__('Value'))
+                                                    ->required(),
+                                                Forms\Components\Checkbox::make('expanded')
+                                                    ->label(__('Expanded')),
+                                            ])
+                                    ])
                             ])
                             ->maxItems(1)
                             ->columnSpanFull()

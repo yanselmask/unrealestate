@@ -18,7 +18,6 @@ class Property extends Model implements HasMedia
     protected $guarded = [];
 
     protected $casts = [
-        'price' => 'array',
         'location' => 'array',
         'contact' => 'array',
         'status' => \App\Enums\PropertyStatus::class,
@@ -54,6 +53,11 @@ class Property extends Model implements HasMedia
         return $this->belongsToMany(Facility::class)->withPivot('value');
     }
 
+    public function prices()
+    {
+        return $this->belongsToMany(Currency::class)->withPivot('price');
+    }
+
     public function outdoors()
     {
         return $this->belongsToMany(Outdoor::class)->withPivot('distance');
@@ -72,6 +76,18 @@ class Property extends Model implements HasMedia
     public function scopeArchived($query)
     {
         return $query->where('status', 2);
+    }
+
+    public function price(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $defaultCurrency = setting('localization_default_currency');
+                $pivot = $this->prices->where('code', currency()->getUserCurrency() ?? $defaultCurrency)->first();
+
+                return $pivot ?  currency_price($pivot->pivot->price, currency()->getUserCurrency() ?? $defaultCurrency) : null;
+            }
+        );
     }
 
     public function firstImageMedia(): Attribute

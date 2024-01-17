@@ -84,7 +84,7 @@ class Post extends Model implements HasMedia
     public function authorImage(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->user_id ? $this->user->profile_photo_path : "https://www.gravatar.com/avatar/" . md5(setting('site_admin_email') ?? 'email@example.com')
+            get: fn () => $this->user_id ? $this->user->profile_photo_url : "https://www.gravatar.com/avatar/" . md5(setting('site_admin_email') ?? 'email@example.com')
         );
     }
 
@@ -109,6 +109,11 @@ class Post extends Model implements HasMedia
             'content' => (string) $this->content,
             'editorjs_blocks' => (string) $this->editorjs_blocks,
         ];
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('status', 1);
     }
 
     public function imageUrl(): Attribute

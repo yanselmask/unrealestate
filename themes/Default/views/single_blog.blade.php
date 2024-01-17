@@ -57,14 +57,16 @@
             </div>
             <div class="col-lg-8 col-md-10">
                 <!-- Author-->
-                <div class="pb-md-3 mb-4"><a class="d-flex align-items-center text-body text-decoration-none"
-                        href="#"><img class="rounded-circle" src="{{ $post->author_image }}" width="80"
+                <div class="pb-md-3 mb-4">
+                    <a class="d-flex align-items-center text-body text-decoration-none" href="#">
+                        <img class="rounded-circle" src="{{ $post->author_image }}" width="80"
                             alt="{{ $post->author_name }}">
                         <div class="ps-3">
                             <h2 class="h6 mb-1">{{ $post->author_name }}</h2>
                             <span class="fs-sm">{{ $post->author_bio }}</span>
                         </div>
-                    </a></div>
+                    </a>
+                </div>
                 <!-- Post content-->
                 {!! $post->content !!}
                 <!-- Post tags-->

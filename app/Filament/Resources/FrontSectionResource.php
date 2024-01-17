@@ -34,6 +34,8 @@ class FrontSectionResource extends Resource
                                 'hero' => __('Hero'),
                                 'category' => __('Category'),
                                 'service' => __('Service'),
+                                'plan' => __('Plan'),
+                                'blog' => __('Blog'),
                                 'calculator' => __('Calculator'),
                                 'partner' => __('Partner'),
                                 'agent' => __('Agent'),
@@ -119,6 +121,18 @@ class FrontSectionResource extends Resource
                                                     ])
                                                     ->required(),
                                             ])
+                                    ]),
+                                Forms\Components\Builder\Block::make('plan')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading'))
+                                    ]),
+                                Forms\Components\Builder\Block::make('blog')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('heading')
+                                            ->label(__('Heading')),
+                                        Forms\Components\TextInput::make('limit')
+                                            ->label(__('Limit')),
                                     ]),
                                 Forms\Components\Builder\Block::make('calculator')
                                     ->schema([

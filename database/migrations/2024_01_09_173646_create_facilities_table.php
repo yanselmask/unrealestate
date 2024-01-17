@@ -50,28 +50,29 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('short_name')->nullable();
-            $table->json('price')->nullable();
             $table->string('interval');
             $table->integer('duration');
-            $table->string('listing_limit');
-            $table->string('ads_limit');
+            $table->integer('listing_limit');
+            $table->integer('ads_limit');
             $table->json('features')->nullable();
             $table->boolean('is_recommended')->default(false);
+            $table->string('image')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
-        Schema::create('user_purchased_packages', function (Blueprint $table) {
-            $table->id();
-            $table->morphs('model');
-            $table->unsignedBigInteger('package_id');
+        Schema::create('package_user', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
             $table->timestamp('start_at');
             $table->timestamp('end_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
             $table->integer('used_listing')->default(0);
             $table->integer('used_ads')->default(0);
+            $table->integer('limit_listing')->default(0);
+            $table->integer('limit_ads')->default(0);
             $table->tinyInteger('status')->default(1);
-            $table->timestamps();
         });
+        //
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('transaction_id');
@@ -175,6 +176,12 @@ return new class extends Migration
             $table->bigInteger('price')->nullable();
         });
         //
+        Schema::create('currency_package', function (Blueprint $table) {
+            $table->foreignId('currency_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
+            $table->bigInteger('price')->nullable();
+        });
+        //
         Schema::create('temporary_files', function (Blueprint $table) {
             $table->id();
             $table->string('folder');
@@ -195,7 +202,7 @@ return new class extends Migration
         Schema::create('sectionables', function (Blueprint $table) {
             $table->foreignId('front_section_id')->constrained()->cascadeOnDelete();
             $table->morphs('sectionable');
-            $table->string('sort_order')->nullable();
+            $table->integer('sort_order')->nullable();
 
             $table->unique(['front_section_id', 'sectionable_id', 'sectionable_type'], 'unique_assign');
         });
@@ -213,6 +220,10 @@ return new class extends Migration
         //
         Schema::dropIfExists('currency_property');
         //
+        Schema::dropIfExists('currency_package');
+        //
+        Schema::dropIfExists('package_user');
+        //
         Schema::dropIfExists('facilities');
         //
         Schema::dropIfExists('user_reports');
@@ -222,7 +233,6 @@ return new class extends Migration
         Schema::dropIfExists('outdoors');
         //
         Schema::dropIfExists('payments');
-        Schema::dropIfExists('user_purchased_packages');
         Schema::dropIfExists('packages');
         //
         Schema::dropIfExists('contacts');

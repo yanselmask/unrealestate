@@ -37,6 +37,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/scout": "^10.6",
         "laravel/tinker": "^2.8",
+        "lucasdotvin/laravel-soulbscription": "^4.1",
         "marjose123/filament-lockscreen": "^2.0",
         "meilisearch/meilisearch-php": "^1.5",
         "mohamedsabil83/filament-forms-tinyeditor": "^2.2",
@@ -53,10 +54,12 @@
         "spatie/laravel-medialibrary": "^11.0.0",
         "spatie/laravel-sluggable": "^3.5",
         "stechstudio/filament-impersonate": "^3.5",
+        "stripe/stripe-php": "^13.9",
         "torann/currency": "^1.1",
         "wiebenieuwenhuis/filament-code-editor": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

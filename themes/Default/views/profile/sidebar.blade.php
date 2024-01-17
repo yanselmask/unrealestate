@@ -30,9 +30,11 @@
                 </ul>
             </div>
         </div>
-        <a class="btn btn-primary btn-lg w-100 mb-3" href="{{ route('home.listing.add') }}"><i
-                class="fi-plus me-2"></i>{{ __('Add property') }}
-        </a>
+        @if ($user->propertiesRestants > 0)
+            <a class="btn btn-primary btn-lg w-100 mb-3" href="{{ route('home.listing.add') }}"><i
+                    class="fi-plus me-2"></i>{{ __('Add property') }}
+            </a>
+        @endif
         <a class="btn btn-outline-secondary d-block d-md-none w-100 mb-3" href="#account-nav"
             data-bs-toggle="collapse"><i class="fi-align-justify me-2"></i>{{ __('Menu') }}
         </a>

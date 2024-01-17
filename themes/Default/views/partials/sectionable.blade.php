@@ -84,4 +84,14 @@
              'content' => $section->content,
          ])
      @endif
+     @if ($section->key == 'plan')
+         @include('sections.plan', [
+             'content' => $section->content,
+         ])
+     @endif
+     @if ($section->key == 'blog')
+         @include('sections.blog', [
+             'content' => $section->content,
+         ])
+     @endif
  @endforeach

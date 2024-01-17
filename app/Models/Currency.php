@@ -15,4 +15,9 @@ class Currency extends Model
     {
         return $this->belongsToMany(Property::class)->withPivot('price');
     }
+
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class)->withPivot('price');
+    }
 }

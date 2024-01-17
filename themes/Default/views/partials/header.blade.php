@@ -73,10 +73,12 @@
                     <a class="dropdown-item" href="javascript:;" onclick="logout()">{{ __('Sign Out') }}</a>
                 </div>
             </div>
-            <a class="btn btn-primary btn-sm order-lg-3 ms-2" href="{{ route('home.listing.add') }}">
-                <i class="fi-plus me-2"></i>{{ __('Add') }}&nbsp;
-                <span class="d-none d-sm-inline">{{ __('property') }}</span>
-            </a>
+            @if ($user->propertiesRestants > 0)
+                <a class="btn btn-primary btn-sm order-lg-3 ms-2" href="{{ route('home.listing.add') }}">
+                    <i class="fi-plus me-2"></i>{{ __('Add') }}&nbsp;
+                    <span class="d-none d-sm-inline">{{ __('property') }}</span>
+                </a>
+            @endif
         @endguest
         <div class="navbar-collapse order-lg-2 collapse" id="navbarNav">
             <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem">

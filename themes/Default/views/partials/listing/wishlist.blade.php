@@ -1,7 +1,7 @@
      <div class="card card-hover card-horizontal mb-4 border-0 shadow-sm">
          <div class="card-img-top position-relative"
              style="background-image: url(
-                {{ $property->getFirstMediaUrl('gallery', 'thumb') != '' ? $property->getFirstMediaUrl('gallery', 'thumb') : $property->image_url }}
+                {{ $property->image_thumb_url }}
                 );">
              <a class="stretched-link" href="{{ route('home.listing.show', $property) }}">
              </a>
@@ -28,8 +28,7 @@
                      href="{{ route('home.listing.show', $property) }}">{{ $property->title }}</a>
              </h3>
              <p class="fs-sm text-muted mb-2">{{ $property->address }}</p>
-             <div class="fw-bold"><i
-                     class="fi-cash mt-n1 lead me-2 align-middle opacity-70"></i>{{ currency_price($property->price[0]['price'], 'EUR') }}
+             <div class="fw-bold"><i class="fi-cash mt-n1 lead me-2 align-middle opacity-70"></i>{{ $property->price }}
              </div>
          </div>
      </div>

@@ -14,6 +14,7 @@ use App\Models\TemporaryFile;
 use App\Models\User;
 use App\Models\Facility;
 use App\Models\Outdoor;
+use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +23,69 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class HomeController extends Controller
 {
+    public function checkout(Package $package)
+    {
+        return view('checkout', compact('package'));
+    }
+    public function createIntent(Request $request)
+    {
+        try {
+            $stripe = new \Stripe\StripeClient('sk_test_51OZaFOBuGIglNGvFd4i84yU0iUA3ZW89O9dP1MrpBlvc8BgZajLTlCdzBeFvdPsROS6h4CCkAKvQQn7wSEKVpv4400RSHQivN6');
 
+            $package = Package::findOrfail($request->package_id);
+
+            $response = $stripe->paymentIntents->create([
+                'amount' => $package->only_price * 100,
+                'currency' => currency()->getUserCurrency(),
+                'automatic_payment_methods' => ['enabled' => true],
+            ]);
+
+            return response()->json(['data' => $response, 'package_id' => $package->id]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th]);
+        }
+    }
+    function calculateEndDate($package)
+    {
+        switch ($package->interval) {
+            case 'day':
+                return now()->addDays($package->duration);
+            case 'week':
+                return now()->addWeeks($package->duration);
+            case 'month':
+                return now()->addMonths($package->duration);
+            case 'year':
+                return now()->addYears($package->duration);
+            default:
+                return null;
+        }
+    }
+    public function buyPlan(Request $request)
+    {
+        try {
+            $package = Package::findOrFail($request->package_id);
+
+            $request->user()->packages()->detach();
+
+            $request->user()->packages()->sync([
+                $package->id => [
+                    'start_at' => now(),
+                    'end_at' => $package->duration > 0 ? $this->calculateEndDate($package) : null,
+                    'limit_listing' => $package->listing_limit,
+                    'limit_ads' => $package->ads_limit
+                ]
+            ]);
+
+            return response()->json(['data' => __('You have subscribed to this new plan')]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => $th]);
+        }
+    }
+    public function successPurchased()
+    {
+        return view('success');
+    }
     public function changeCurrency($currency)
     {
         $previousUrl = url()->previous();
@@ -91,6 +154,8 @@ class HomeController extends Controller
 
     public function addListing()
     {
+        abort_unless(request()->user()->propertiesRestants > 0, 419);
+
         $property = new Property();
         $types = Category::PropertyType()->get();
         $listingAs = ListingAs::all();
@@ -101,6 +166,8 @@ class HomeController extends Controller
 
     public function editListing(Property $property)
     {
+        abort_unless(request()->user()->propertiesRestants > 0, 419);
+
         $types = Category::PropertyType()->get();
         $listingAs = ListingAs::all();
         $outdoors = Outdoor::all();
@@ -110,6 +177,16 @@ class HomeController extends Controller
 
     public function storeListing(Request $request)
     {
+        abort_unless($request->user()->propertiesRestants > 0, 419);
+
+
+        if ($request->user()->propertiesRestants <= 0) {
+            return back()->with(['status' => __('You need to buy a new plan, you no longer have properties')]);
+        }
+
+        $package =  $request->user()->packages()->first();
+        $package->pivot->increment('used_listing');
+
         $property = $this->saveListing($request);
 
         return to_route('home.listing.edit', $property)->with(['status' => __('The property has been added')]);
@@ -117,6 +194,10 @@ class HomeController extends Controller
 
     public function updateListing(Request $request, Property $property)
     {
+        abort_unless($request->user()->havePlanActive, 419);
+
+        //return $request->all();
+
         $this->saveListing($request, $property);
 
         return back()->with(['status' => __('The property has been updated')]);
@@ -168,7 +249,8 @@ class HomeController extends Controller
 
         $property->save();
 
-        if ($request->has('main_image')) {
+        if ($request->main_image) {
+
             $temporary = TemporaryFile::where('folder', $request->main_image)->first();
             if ($temporary) {
 
@@ -388,13 +470,20 @@ class HomeController extends Controller
                 });
             })
             ->when($terms, function ($query) use ($terms) {
-                return $query->whereHas('facilities', function ($query) use ($terms) {
-                    $facilityIds = array_keys($terms);
-                    $facilityValues = array_values($terms);
 
-                    return $query->whereIn('facility_id', $facilityIds)
-                        ->where('value', 'like', '%' . implode('', $facilityValues) . '%');
+                $termsFilted = array_filter($terms, function ($value) {
+                    return $value !== null;
                 });
+                if ($termsFilted != []) {
+                    return $query->whereHas('facilities', function ($query) use ($terms) {
+                        $facilityIds = array_keys($terms);
+                        $facilityValues = array_values($terms);
+                        return $query->whereIn('facility_id', $facilityIds)
+                            ->where('value', 'like', '%' . implode('', $facilityValues) . '%');
+                    });
+                } else {
+                    return $query;
+                }
             })
             ->when($checks, function ($query) use ($checks) {
                 return $query->whereHas('facilities', function ($query) use ($checks) {
@@ -409,7 +498,7 @@ class HomeController extends Controller
             ->when($sort, function ($query) use ($sort) {
                 return match ($sort) {
                     'newest' => $query->orderByDesc('created_at'),
-                    'popularity' => $query->orderBy(DB::table('likeable_like_counters')->select('count')->whereColumn('likeable_like_counters.likeable_id', 'properties.id'), 'desc'),
+                    'popularity' => $query->withCount('likes')->orderBy('likes_count', 'desc'),
                     'low-high-price' => $query->orderBy(
                         DB::table('currency_property')
                             ->select('price')

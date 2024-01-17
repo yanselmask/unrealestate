@@ -4,6 +4,8 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::controller(HomeController::class)
     ->group(function () {
         Route::get('/', 'index')->name('home');
+
+        //Checkout
+        Route::get('/checkout/{package}', 'checkout')->name('checkout.show');
+        Route::post('/create-intent', 'createIntent')->name('intent.create');
+        Route::post('/buy-plan', 'buyPlan')->name('buy.plan');
+        Route::get('/success', 'successPurchased')->name('home.success');
 
         //Pages
         Route::get('/pages/{page}', 'showPage')->name('pages.show');

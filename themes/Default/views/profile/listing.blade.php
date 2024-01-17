@@ -7,7 +7,9 @@
 ])
 @section('content')
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h2 mb-0">{{ __('My Properties') }}</h1>
+        <h1 class="h2 mb-0">{{ __('My Properties') }}
+            <span class="text-success">{{ __(':count restants', ['count' => $user->propertiesRestants]) }}</span>
+        </h1>
         @include('partials.modal.confirm', [
             'route' => route('profile.listing.destroy.all'),
             'title' => 'Surely you want to delete all properties',

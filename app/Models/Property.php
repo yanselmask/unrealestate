@@ -90,6 +90,18 @@ class Property extends Model implements HasMedia
         );
     }
 
+    public function onlyPrice(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $defaultCurrency = setting('localization_default_currency');
+                $pivot = $this->prices->where('code', currency()->getUserCurrency() ?? $defaultCurrency)->first();
+
+                return $pivot ?  $pivot->pivot->price : 0;
+            }
+        );
+    }
+
     public function firstImageMedia(): Attribute
     {
         return Attribute::make(

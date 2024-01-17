@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\MetadatasRelationManager;
 use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource\RelationManager\PermissionRelationManager;
-use App\Filament\Resources\UserResource\RelationManagers\RolesRelationManager;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
@@ -117,8 +116,9 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            MetadatasRelationManager::class,
-            RolesRelationManager::class,
+            RelationManagers\MetadatasRelationManager::class,
+            RelationManagers\PackagesRelationManager::class,
+            RelationManagers\RolesRelationManager::class,
             PermissionRelationManager::class
 
         ];

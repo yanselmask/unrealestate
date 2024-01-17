@@ -50,26 +50,6 @@ class PackageResource extends Resource
                 Forms\Components\TextInput::make('ads_limit')
                     ->label(__('Ads Limit'))
                     ->required(),
-                Forms\Components\Repeater::make('price')
-                    ->schema([
-                        Forms\Components\Select::make('code')
-                            ->options(site_currencies())
-                            ->reactive()
-                            ->live()
-                            ->default(setting('localization_default_currency'))
-                            ->label(__('Currency')),
-                        Forms\Components\TextInput::make('price')
-                            ->prefix(function ($get) {
-                                return $get('code');
-                            })
-                            ->label(__('Price')),
-                    ])
-                    ->required(),
-                Forms\Components\Repeater::make('features')
-                    ->schema([
-                        Forms\Components\TextInput::make('value')
-                            ->label(__('Feature')),
-                    ]),
                 Forms\Components\Select::make('is_recommended')
                     ->label(__('Recommended'))
                     ->options([
@@ -86,6 +66,19 @@ class PackageResource extends Resource
                     ])
                     ->default(1)
                     ->required(),
+                Forms\Components\FileUpload::make('image')
+                    ->label(__('Image'))
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('features')
+                    ->schema([
+                        Forms\Components\TextInput::make('value')
+                            ->label(__('Feature')),
+                        Forms\Components\Checkbox::make('checked')
+                            ->label(__('Checked'))
+                    ])
+                    ->grid(3)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -126,7 +119,8 @@ class PackageResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\PricesRelationManager::class,
+            RelationManagers\UsersRelationManager::class,
         ];
     }
 

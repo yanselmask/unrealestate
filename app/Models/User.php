@@ -13,10 +13,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Spatie\Permission\Traits\HasRoles;
+use LucasDotVin\Soulbscription\Models\Concerns\HasSubscriptions;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use  HasRoles, HasApiTokens, HasFactory, Notifiable;
+    use  HasRoles, HasApiTokens, HasFactory, Notifiable, HasSubscriptions;
     use \Conner\Likeable\Likeable;
 
     /**
@@ -99,6 +100,45 @@ class User extends Authenticatable implements FilamentUser
         return Attribute::make(
             get: fn () => $this->name . ' ' . $this->lastname
         );
+    }
+
+    public function scopePlanActive($query)
+    {
+        return $query->whereHas('packages', function ($query) {
+            return $query->where('package_user.user_id', $this->id)
+                ->where(function ($query) {
+                    return $query->whereNull('package_user.end_at')
+                        ->whereNull('package_user.canceled_at');
+                })
+                ->orWhere(function ($query) {
+                    return $query->where('package_user.end_at', '>', now());
+                });
+        });
+    }
+
+    public function scopeActived($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function havePlanActive(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->planActive()->first()
+        );
+    }
+
+    public function propertiesRestants(): Attribute
+    {
+
+        return Attribute::make(
+            get: fn () => $this->packages()->first()?->pivot->limit_listing - $this->packages()->first()?->pivot->used_listing
+        );
+    }
+
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class)->withPivot(['start_at', 'end_at', 'canceled_at', 'used_listing', 'used_ads', 'limit_listing', 'limit_ads', 'status']);
     }
 
     public function reviews()

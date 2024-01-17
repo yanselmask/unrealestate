@@ -7,8 +7,12 @@
                       data-bs-target="#filters-sidebar"></button>
               </div>
               <div class="offcanvas-header d-block border-bottom pt-lg-4 px-lg-0 pt-0">
-                  <input id="for_box" type="hidden" name="for" value="{{ request()->query('for', '') }}" />
-                  <input type="hidden" name="sort_by" value="{{ request()->query('sort_by', '') }}" />
+                  @if (request()->query('for', ''))
+                      <input id="for_box" type="hidden" name="for" value="{{ request()->query('for', '') }}" />
+                  @endif
+                  @if (request()->query('sort_by', ''))
+                      <input type="hidden" name="sort_by" value="{{ request()->query('sort_by', '') }}" />
+                  @endif
                   <ul class="nav nav-tabs mb-0">
                       <li class="nav-item">
                           <a onclick="toggleFor(this,'rent')"
@@ -76,30 +80,33 @@
                       <h3 class="h6 pt-1">{{ __('Amenities') }}</h3>
                       @foreach ($facilities->whereIn('type', ['radio', 'select']) as $facility)
                           <label class="d-block fs-sm mb-1">{{ $facility->name }}</label>
-                          <div class="btn-group btn-group-sm mb-3" role="group">
-                              @foreach ($facility->values as $value)
-                                  @php
-                                      $facilityId = $facility->id;
-                                      $facilityValue = request()->query('facility')[$facilityId] ?? null;
+                          @if ($facility->values)
+                              <div class="btn-group btn-group-sm mb-3" role="group">
+                                  @foreach ($facility->values as $value)
+                                      @php
+                                          $facilityId = $facility->id;
+                                          $facilityValue = request()->query('facility')[$facilityId] ?? null;
 
-                                      $isChecked = request()->query('facility') && array_key_exists($facilityId, request()->query('facility')) && str_contains($value['value'], $facilityValue);
-                                  @endphp
-                                  <input class="btn-check" type="radio"
-                                      id="facility-{{ $facility->id }}-value-{{ $loop->index }}"
-                                      @checked($isChecked) name="facility[{{ $facility->id }}]"
-                                      value="{{ $value['value'] }}">
-                                  <label class="btn btn-outline-secondary fw-normal"
-                                      for="facility-{{ $facility->id }}-value-{{ $loop->index }}">{{ $value['value'] }}</label>
-                              @endforeach
-                          </div>
+                                          $isChecked = request()->query('facility') && array_key_exists($facilityId, request()->query('facility')) && str_contains($value['value'], $facilityValue);
+                                      @endphp
+                                      <input class="btn-check" type="radio"
+                                          id="facility-{{ $facility->id }}-value-{{ $loop->index }}"
+                                          @checked($isChecked) name="facility[{{ $facility->id }}]"
+                                          value="{{ $value['value'] }}">
+                                      <label class="btn btn-outline-secondary fw-normal"
+                                          for="facility-{{ $facility->id }}-value-{{ $loop->index }}">{{ $value['value'] }}</label>
+                                  @endforeach
+                              </div>
+                          @endif
                       @endforeach
                       @foreach ($facilities->whereIn('type', ['textbox', 'number', 'textarea', 'markdown']) as $facility)
+                          @php
+                              $facilityId = $facility->id;
+                              $termsValue = request()->query('terms')[$facilityId] ?? '';
+                          @endphp
+
                           <div class="mb-2">
                               <label class="d-block fs-sm mb-1">{{ $facility->name }}</label>
-                              @php
-                                  $facilityId = $facility->id;
-                                  $termsValue = request()->query('terms')[$facilityId] ?? '';
-                              @endphp
                               <input type="text" class="form-control" name="terms[{{ $facilityId }}]"
                                   placeholder="{{ __('Enter value') }}" value="{{ $termsValue }}">
                           </div>
@@ -107,27 +114,27 @@
                       @foreach ($facilities->where('type', 'checkbox') as $facility)
                           <div class="simplebar-content" style="padding: 0px;">
                               <label class="d-block fs-sm mb-1"><b>{{ $facility->name }}</b></label>
-                              @foreach ($facility->values as $value)
-                                  @php
-                                      $facilityId = $facility->id;
-                                      $checks = request()->query('checks') ?? [];
-                                      $facilityValue = $checks[$facilityId] ?? null;
+                              @if ($facility->values)
+                                  @foreach ($facility->values as $value)
+                                      @php
+                                          $facilityId = $facility->id;
+                                          $checks = request()->query('checks', []);
+                                          $facilityValue = $checks[$facilityId] ?? null;
 
-                                      $isChecked = request()->query('checks') && array_key_exists($facilityId, request()->query('checks')) && in_array($value['value'], $facilityValue);
-                                  @endphp
-                                  <div class="form-check">
-                                      <input class="form-check-input" type="checkbox"
-                                          name="checks[{{ $facility->id }}][]"
-                                          id="facility-{{ $facility->id }}-value-{{ $loop->index }}"
-                                          @checked($isChecked) value="{{ $value['value'] }}">
-                                      <label class="form-check-label fs-sm"
-                                          for="facility-{{ $facility->id }}-value-{{ $loop->index }}">{{ $value['value'] }}</label>
-                                  </div>
-                              @endforeach
+                                          $isChecked = request()->query('checks', []) && array_key_exists($facilityId, request()->query('checks')) && in_array($value['value'], $facilityValue);
+                                      @endphp
+                                      <div class="form-check">
+                                          <input class="form-check-input" type="checkbox"
+                                              name="checks[{{ $facility->id }}][]"
+                                              id="facility-{{ $facility->id }}-value-{{ $loop->index }}"
+                                              @checked($isChecked) value="{{ $value['value'] }}">
+                                          <label class="form-check-label fs-sm"
+                                              for="facility-{{ $facility->id }}-value-{{ $loop->index }}">{{ $value['value'] }}</label>
+                                      </div>
+                                  @endforeach
+                              @endif
                           </div>
                       @endforeach
-
-
                   </div>
               </div>
               <div class="mb-2 pb-4">

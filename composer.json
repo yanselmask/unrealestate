@@ -37,7 +37,6 @@
         "laravel/sanctum": "^3.3",
         "laravel/scout": "^10.6",
         "laravel/tinker": "^2.8",
-        "lucasdotvin/laravel-soulbscription": "^4.1",
         "marjose123/filament-lockscreen": "^2.0",
         "meilisearch/meilisearch-php": "^1.5",
         "mohamedsabil83/filament-forms-tinyeditor": "^2.2",

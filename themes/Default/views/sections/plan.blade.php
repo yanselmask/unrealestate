@@ -32,7 +32,7 @@
                             @auth
                                 @if (request()->user()
                                         ?->packages()
-                                        ?->first()?->id === $package->id)
+                                        ?->first()?->id === $package->id && request()->user()?->propertiesRestants > 0)
                                     <a class="btn btn-primary" href="#">{{ __('Actived') }}</a>
                                 @else
                                     <a class="btn btn-outline-primary"

@@ -13,11 +13,10 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Spatie\Permission\Traits\HasRoles;
-use LucasDotVin\Soulbscription\Models\Concerns\HasSubscriptions;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use  HasRoles, HasApiTokens, HasFactory, Notifiable, HasSubscriptions;
+    use  HasRoles, HasApiTokens, HasFactory, Notifiable;
     use \Conner\Likeable\Likeable;
 
     /**
@@ -185,5 +184,10 @@ class User extends Authenticatable implements FilamentUser
     public function notificationsArray(): Attribute
     {
         return Attribute::get(fn () => $this->notifications ?? []);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

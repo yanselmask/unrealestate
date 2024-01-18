@@ -43,7 +43,9 @@ class PackageResource extends Resource
                 Forms\Components\TextInput::make('duration')
                     ->label(__('Duration'))
                     ->required(),
-
+                Forms\Components\TextInput::make('trial_days')
+                    ->label(__('Trial Days'))
+                    ->required(),
                 Forms\Components\TextInput::make('listing_limit')
                     ->label(__('Listing Limit'))
                     ->required(),
@@ -96,6 +98,8 @@ class PackageResource extends Resource
                     ->label(__('Interval')),
                 Tables\Columns\TextColumn::make('duration')
                     ->label(__('Duration')),
+                Tables\Columns\TextColumn::make('trial_days')
+                    ->label(__('Trial Days')),
                 Tables\Columns\TextColumn::make('listing_limit')
                     ->label(__('Listing Limit')),
                 Tables\Columns\TextColumn::make('ads_limit')

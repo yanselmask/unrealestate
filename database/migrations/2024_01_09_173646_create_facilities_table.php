@@ -52,8 +52,9 @@ return new class extends Migration
             $table->string('short_name')->nullable();
             $table->string('interval');
             $table->integer('duration');
-            $table->integer('listing_limit');
-            $table->integer('ads_limit');
+            $table->integer('listing_limit')->nullable();
+            $table->integer('ads_limit')->nullable();
+            $table->integer('trial_days')->nullable();
             $table->json('features')->nullable();
             $table->boolean('is_recommended')->default(false);
             $table->string('image')->nullable();
@@ -77,9 +78,10 @@ return new class extends Migration
             $table->id();
             $table->string('transaction_id');
             $table->integer('amount');
+            $table->string('currency')->nullable();
             $table->string('payment_gateway');
             $table->unsignedBigInteger('package_id');
-            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('user_id');
             $table->tinyInteger('status');
             $table->timestamps();
         });

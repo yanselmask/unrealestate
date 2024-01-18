@@ -6,7 +6,7 @@ use App\Models\Category;
 use App\Models\Currency;
 use App\Models\FrontSection;
 use App\Models\ListingAs;
-use App\Models\Message;
+use App\Models\Payment;
 use App\Models\Page;
 use App\Models\Property;
 use App\Models\Review;
@@ -47,15 +47,17 @@ class HomeController extends Controller
     }
     function calculateEndDate($package)
     {
+        $startDate = now()->addDays($package->trial_days);
+
         switch ($package->interval) {
             case 'day':
-                return now()->addDays($package->duration);
+                return $startDate->addDays($package->duration);
             case 'week':
-                return now()->addWeeks($package->duration);
+                return $startDate->addWeeks($package->duration);
             case 'month':
-                return now()->addMonths($package->duration);
+                return $startDate->addMonths($package->duration);
             case 'year':
-                return now()->addYears($package->duration);
+                return $startDate->addYears($package->duration);
             default:
                 return null;
         }
@@ -65,20 +67,35 @@ class HomeController extends Controller
         try {
             $package = Package::findOrFail($request->package_id);
 
+            $limitBefore = $request->user()->packages()->first()->pivot->limit_listing ?? 0;
+            $adsBefore = $request->user()->packages()->first()->pivot->limit_ads ?? 0;
+            $usedListingBefore = $request->user()->packages()->first()->pivot->used_listing ?? 0;
+            $usedAdsBefore = $request->user()->packages()->first()->pivot->used_ads ?? 0;
             $request->user()->packages()->detach();
 
             $request->user()->packages()->sync([
                 $package->id => [
                     'start_at' => now(),
                     'end_at' => $package->duration > 0 ? $this->calculateEndDate($package) : null,
-                    'limit_listing' => $package->listing_limit,
-                    'limit_ads' => $package->ads_limit
+                    'limit_listing' => $package->listing_limit + $limitBefore,
+                    'limit_ads' => $package->ads_limit + $adsBefore,
+                    'used_ads' => $usedListingBefore,
+                    'used_listing' => $usedAdsBefore
                 ]
             ]);
 
-            return response()->json(['data' => __('You have subscribed to this new plan')]);
+            $request->user()->payments()->create([
+                'transaction_id' => $request->trx_id,
+                'amount' => $package->only_price,
+                'currency' => currency()->getUserCurrency(),
+                'payment_gateway' => 'card',
+                'package_id' => $package->id,
+                'user_id' =>   $request->user()->id,
+                'status' => 1
+            ]);
+
+            return response()->json(['data' => __('You have purchased this package')]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json(['error' => $th]);
         }
     }

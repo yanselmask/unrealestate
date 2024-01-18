@@ -60,6 +60,7 @@
                             if (result.paymentIntent && result.paymentIntent.status == "succeeded") {
                                 let bodyContent = new FormData();
                                 bodyContent.append('package_id', @js($package->id))
+                                bodyContent.append('trx_id', result.paymentIntent.id)
                                 let url = @js(route('buy.plan'));
                                 let req = await fetch(url, {
                                     method: 'POST',
@@ -70,9 +71,18 @@
                                 });
                                 let res = await req.json();
 
-                                cardButton.innerHTML = `Loading...`
 
-                                window.location.href = @js(route('home.success'));
+                                if (res.data) {
+                                    cardButton.innerHTML = `Loading...`
+                                    window.location.href = @js(route('home.success'));
+                                }
+
+                                if (res.error) {
+                                    console.log(res)
+                                    cardButton.removeAttribute('disabled')
+                                }
+
+
                             }
 
                             if (result.error) {

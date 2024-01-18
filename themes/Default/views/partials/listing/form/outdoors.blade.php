@@ -20,7 +20,7 @@
                             placeholder="{{ __('Enter the distance') }}"
                             value="{{ old('outdoors.' . $outdoor->id, outdoor_value($property->id, $outdoor->id)) }}">
                         <span class="input-group-text text-muted">
-                            {{ __('KM') }}
+                            {{ __(env('DISTANCE_TYPE')) }}
                         </span>
                     </div>
                 </div>

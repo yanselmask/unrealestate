@@ -179,7 +179,6 @@ class HomeController extends Controller
     {
         abort_unless($request->user()->propertiesRestants > 0, 419);
 
-
         if ($request->user()->propertiesRestants <= 0) {
             return back()->with(['status' => __('You need to buy a new plan, you no longer have properties')]);
         }
@@ -195,8 +194,6 @@ class HomeController extends Controller
     public function updateListing(Request $request, Property $property)
     {
         abort_unless($request->user()->havePlanActive, 419);
-
-        //return $request->all();
 
         $this->saveListing($request, $property);
 
@@ -336,7 +333,8 @@ class HomeController extends Controller
 
         if ($request->outdoors) {
             $keyEnd = [];
-            foreach ($request->outdoors as $k => $v) {
+            $filtered = array_filter($request->outdoors, fn ($i) => $i != null);
+            foreach ($filtered as $k => $v) {
                 $keyEnd[$k] = ['distance' => $v];
             }
 
@@ -362,6 +360,10 @@ class HomeController extends Controller
 
     public function showListing(Property $property)
     {
+        if ($property->status->value != 1 && request()->user()?->id !== $property->user_id) {
+            abort(404);
+        }
+
         $recents = [];
         $sortByReviews = request()->query('sort_by');
         $average = str_replace('.', ',', $property->reviews->avg('stars'));

@@ -22,6 +22,8 @@
             @include('partials.listing.single.details')
             <!-- Amenities-->
             @include('partials.listing.single.amenities')
+            <!-- Outdoors -->
+            @include('partials.listing.single.outdoors')
             <!-- Property Virtual -->
             @include('partials.listing.single.virtual')
             <!-- Property Video -->

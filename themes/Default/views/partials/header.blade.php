@@ -56,7 +56,7 @@
                     <a class="dropdown-item" href="{{ route('profile.password') }}">
                         <i class="fi-lock me-2 opacity-60"></i>{{ __('Password & Security') }}
                     </a>
-                    <a class="dropdown-item" href="{{ route('profile.listing') }}">
+                    <a class="dropdown-item" href="{{ route('profile.listing') }}?status=published">
                         <i class="fi-home me-2 opacity-60"></i>{{ __('My Properties') }}
                     </a>
                     <a class="dropdown-item" href="{{ route('profile.wishlist') }}">
